@@ -11,7 +11,8 @@ extern "C" int __declspec(dllexport) __stdcall DllPlugin_OnLoad() {
 	FileLogger dbg("dllmain_max");
 
 	dbg << "DllPlugin_OnLoad" << std::endl;
-	gContainedPlugin = new WowPlugin(new WowMaxBot());
+	gContainedPlugin = new WowPlugin();
+	gContainedPlugin->attachBot(new WowMaxBot());
 	return 0;
 }
 
