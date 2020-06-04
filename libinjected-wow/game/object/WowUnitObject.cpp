@@ -79,7 +79,7 @@ WowGuid128* WowUnitObject::getTargetGuidPtr() const {
 }
 
 void WowUnitObject::moveTo(WowGame& game, const WowVector3f& destination) {
-	int delta = getPosition().getFacingDeltaDegrees(getFacingDegrees(), destination);
+	int delta = getPosition().get_facing_delta_degrees(getFacingDegrees(), destination);
 	int anglePrecision = 10;
 
 	auto windowController = game.getWindowController();

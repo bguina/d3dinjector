@@ -57,7 +57,7 @@ bool LinearPathFinder::followPathToDestination(const Vector3f& currentPosition, 
 	if (mNextWaypoint == mPath.end()) {
 		mNextWaypoint = helperGetNearestWaypoint(mPath, currentPosition);
 	}
-	else if (currentPosition.getDistanceTo(*mNextWaypoint) < 10)
+	else if (currentPosition.get_distance_to(*mNextWaypoint) < 10)
 	{
 		// we have reached the target position, proceed to next waypoint
 		// fixme: we should proceed to the path leading to the mDestinationWaypoint!
@@ -66,7 +66,7 @@ bool LinearPathFinder::followPathToDestination(const Vector3f& currentPosition, 
 		// fixme: this should never happen since we are supposed to lead to the mDestinationWaypoint (unless destination is not set?)
 		if (mNextWaypoint == mPath.end())
 		{
-			bool endIsNearStart = currentPosition.getDistanceTo(*mPath.begin()) < 3;
+			bool endIsNearStart = currentPosition.get_distance_to(*mPath.begin()) < 3;
 
 			if (!endIsNearStart)
 			{
@@ -97,7 +97,7 @@ std::list<Vector3f>::const_iterator helperGetNearestWaypoint(const std::list<Vec
 
 	for (std::list<Vector3f>::const_iterator it = mPath.begin(); it != mPath.end(); it++)
 	{
-		float waypointDistance = currentPosition.getDistanceTo(*it);
+		float waypointDistance = currentPosition.get_distance_to(*it);
 
 		if (waypointDistance < nearestDistance)
 		{

@@ -11,14 +11,16 @@ SpellBook::SpellBook(
 {
 }
 
-bool SpellBook::isKnown(int spellId) const {
-	auto spell = getSpell(spellId);
+bool SpellBook::isKnown(int spellId) const
+{
+	const auto* const spell = getSpell(spellId);
 
 	return spell->flags & spell->flags & SpellbookSpellFlags::Isknown;
 }
 
-bool SpellBook::isLearnt(int spellId) const {
-	auto spell = getSpell(spellId);
+bool SpellBook::isLearnt(int spellId) const
+{
+	const auto* const spell = getSpell(spellId);
 
 	return (nullptr != spell && spell->flags & SpellbookSpellFlags::IsLearnt);
 }
@@ -44,7 +46,7 @@ void SpellBook::castSpell(const WowGame& game, const uint32_t spellId, const uin
 	}
 
 	using SpellBook_CastSpell = void(__fastcall) (int spellId, int itemId, const uint128_t* pGuid128, unsigned __int8 isTrade, char padArg);
-	(game.getFunction<SpellBook_CastSpell>(0xDBAC30))(spellIdx, 0, target, 0, 0);
+	(game.getFunction<SpellBook_CastSpell>(WowGameOffsets::WowSpellBook::FunctionCastSpell))(spellIdx, 0, target, 0, 0);
 }
 
 const SpellbookDescriptor* SpellBook::getSpell(uint32_t spellId) const {

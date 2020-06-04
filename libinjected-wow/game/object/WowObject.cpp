@@ -3,7 +3,7 @@
 
 #include "WowObject.h"
 
-WowObject::WowObject(const uint8_t* baseAddr) : MemoryObject(baseAddr) {
+WowObject::WowObject(const uint8_t* baseAddress) : MemoryObject(baseAddress) {
 
 }
 
@@ -38,8 +38,8 @@ std::string WowObject::getTypeLabel() const {
 	case WowObjectType::Object:return  "Object";
 	case WowObjectType::Item:return "Item";
 	case WowObjectType::Container:return  "Container";
-	case WowObjectType::AzeriteEmpoweredItem: "AzeriteEmpoweredItem";
-	case WowObjectType::AzeriteItem: "AzeriteItem";
+	case WowObjectType::AzeriteEmpoweredItem: return "AzeriteEmpoweredItem";
+	case WowObjectType::AzeriteItem: return "AzeriteItem";
 	case WowObjectType::Unit:return  "Unit";
 	case WowObjectType::Player:return  "Player";
 	case WowObjectType::ActivePlayer:return  "ActivePlayer";
@@ -83,19 +83,19 @@ int WowObject::getFacingDegrees() const {
 
 // Position helpers
 float WowObject::getDistanceTo(const WowObject& object) const {
-	return getPosition().getDistanceTo(object.getPosition());
+	return getPosition().get_distance_to(object.getPosition());
 }
 
 float WowObject::getFlightDistanceTo(const WowObject& object) const {
-	return getPosition().getFlightDistanceTo(object.getPosition());
+	return getPosition().get_flight_distance_to(object.getPosition());
 }
 
 int WowObject::getFacingDegreesTo(const WowObject& object) const {
-	return getPosition().getFacingDegreesTo(object.getPosition());
+	return getPosition().get_facing_degrees_to(object.getPosition());
 }
 
 int WowObject::getFacingDeltaDegrees(const WowObject& object) const {
-	return getPosition().getFacingDeltaDegrees(getFacingDegrees(), object.getPosition());
+	return getPosition().get_facing_delta_degrees(getFacingDegrees(), object.getPosition());
 }
 
 // protected:

@@ -2,9 +2,10 @@
 
 #include <fstream>
 
- const float PI = 3.141592653589793f;
+constexpr  float PI = 3.141592653589793f;
 
-struct WowVector3f {
+class WowVector3f {
+public:
 	union {
 		struct {
 			float x;
@@ -16,20 +17,20 @@ struct WowVector3f {
 
 	float operator[](int index) const;
 
-	WowVector3f translatedByX(float d) const;
-	WowVector3f translatedByY(float d) const;
-	WowVector3f translatedByZ(float d) const;
+	WowVector3f translated_by_x(float d) const;
+	WowVector3f translated_by_y(float d) const;
+	WowVector3f translated_by_z(float d) const;
 
-	WowVector3f& translateByX(float d);
-	WowVector3f& translateByY(float d);
-	WowVector3f& translateByZ(float d);
+	WowVector3f& translate_by_x(float d);
+	WowVector3f& translate_by_y(float d);
+	WowVector3f& translate_by_z(float d);
 
-	float getDistanceTo(const WowVector3f& to) const;
-	float getFlightDistanceTo(const WowVector3f& to) const;
+	float get_distance_to(const WowVector3f& to) const;
+	float get_flight_distance_to(const WowVector3f& to) const;
 
-	int getFacingDegreesTo(const WowVector3f& to) const;
-	int getFacingDeltaDegrees(int angle, const WowVector3f& to) const;
-	WowVector3f getPositionAtDegreesByDistance(int angle, float d) const;
+	int get_facing_degrees_to(const WowVector3f& to) const;
+	int get_facing_delta_degrees(int angle, const WowVector3f& to) const;
+	WowVector3f get_position_at_degrees_by_distance(int angle, float d) const;
 };
 
 inline std::ostream& operator<<(

@@ -8,11 +8,11 @@
 #include "ServerWowMessage.h"
 
 WowPlugin::WowPlugin() :
-	mBotPause(true),
 	mGame(std::make_shared<WowGame>(GetCurrentProcessId(), (const uint8_t*)GetModuleHandleA(0))),
 	mDbg("WowPlugin"),
 	mBot(nullptr),
-	mClient(new Client())
+	mClient(new Client()),
+	mBotPause(true)
 {
 	FileLogger dbg(mDbg, "WowPlugin()");
 
@@ -44,7 +44,7 @@ bool WowPlugin::onD3dRender() {
 	FileLogger dbg(mDbg, "onD3dRender");
 
 	dbg << FileLogger::debug << "call" << FileLogger::normal << std::endl;
-	if (!mClient->isConnected() || !_readServerMessages()) {
+	if (!mClient->isConnected() || !read_server_messages()) {
 		dbg << FileLogger::warn << "lost connection with server" << FileLogger::normal << std::endl;
 		return false;
 	}
@@ -52,13 +52,22 @@ bool WowPlugin::onD3dRender() {
 		dbg << FileLogger::debug << "server up-to-date" << FileLogger::normal << std::endl;
 	}
 
-	dbg << FileLogger::debug << "updating game" << FileLogger::normal << std::endl;
 	mGame->update();
-	if (mBot != nullptr) {
+	dbg << FileLogger::debug << "updated game: "  << mGame->getObjectManager().isEnabled() << FileLogger::normal << std::endl;
+
+	if (mBot != nullptr)
+	{
 		if (!mBotPause)
+		{
 			mBot->onEvaluate();
+		}
+		else
+		{
+			dbg << FileLogger::debug << "agent is paused" << FileLogger::normal << std::endl;
+		}
 	}
-	else {
+	else
+	{
 		dbg << FileLogger::warn << "no bot is set" << FileLogger::normal << std::endl;
 	}
 
@@ -105,7 +114,7 @@ ServerWowMessage _buildMessage(Client& mClient, const std::string& messageId) {
 }
 
 
-bool WowPlugin::_readServerMessages() {
+bool WowPlugin::read_server_messages() {
 	FileLogger dbg(mDbg, "_readServerMessages");
 	std::list<std::string> messages = mClient->getMessageAvailable();
 	bool eject = false;
@@ -124,6 +133,10 @@ bool WowPlugin::_readServerMessages() {
 
 		case MessageType::POST_SERVER_EJECTION:
 			msg.eject = true;
+			mBotPause = true;
+			mBot->onPause();
+			break;
+			
 		case MessageType::PAUSE:
 			mBotPause = true;
 			mBot->onPause();

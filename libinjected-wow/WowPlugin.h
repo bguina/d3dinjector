@@ -26,13 +26,13 @@ public:
 	virtual bool onD3dRender() override;
 
 protected:
-	bool _readServerMessages();
+	bool read_server_messages();
 
 	std::unique_ptr<Client> mClient;
-	bool mBotPause;
 	std::shared_ptr<WowGame> mGame;
 	FileLogger mDbg;
 	std::unique_ptr<IWowBot> mBot;
+	bool mBotPause;
 };
 
 inline std::ostream& operator<<(std::ostream& out, const class WowPlugin& obj) {

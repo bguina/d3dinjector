@@ -26,8 +26,7 @@ DllFolderPlugin::DllFolderPlugin(const std::string& tag, bool keepAlive) :
 {
 }
 
-DllFolderPlugin::~DllFolderPlugin() {
-}
+DllFolderPlugin::~DllFolderPlugin() = default;
 
 std::string DllFolderPlugin::getTag() const {
 	return "DllFolderPlugin[" + getLibraryPath() + ":" + std::to_string(getLibraryVersion()) + "]";
@@ -45,7 +44,7 @@ void DllFolderPlugin::freeLibrary() {
 bool DllFolderPlugin::loadFolder(const std::wstring& path) {
 	FileLogger dbg(mDbg, "loadFolder");
 	std::wstring latestLibrary;
-	FILETIME latestTs(lookupLatest(path, latestLibrary));
+	const FILETIME latestTs(lookupLatest(path, latestLibrary));
 
 	dbg << FileLogger::info << "freeing any previous library" << FileLogger::normal << std::endl;
 	freeLibrary();
@@ -64,7 +63,7 @@ bool DllFolderPlugin::loadFolder(const std::wstring& path) {
 bool DllFolderPlugin::refreshLibrary() {
 	FileLogger dbg(mDbg, "refreshLibrary");
 	std::wstring latestLibrary;
-	FILETIME latestTs = lookupLatest(mFolder, latestLibrary);
+	const FILETIME latestTs = lookupLatest(mFolder, latestLibrary);
 
 	if (!latestLibrary.empty() && CompareFileTime(&latestTs, &mCurrentVersion) > 0) {
 		dbg << FileLogger::info << " found new library version " << wstringConvertToString(latestLibrary) << FileLogger::normal << std::endl;
@@ -87,6 +86,9 @@ bool DllFolderPlugin::loadLibrary(const std::wstring& dllPath) {
 	auto targetDup = dllPath.substr(0, dllPath.find_last_of('.')) + L"_lock.dll";
 	bool loaded;
 
+	// try to remove previously existing target location
+	_wremove(targetDup.c_str());
+	
 	// copy with suffix before injecting
 	if (CopyFile(dllPath.c_str(), targetDup.c_str(), 0)) {
 		dbg << FileLogger::info << "duplicated " << wstringConvertToString(dllPath) << " to " << wstringConvertToString(targetDup) << FileLogger::normal << std::endl;
@@ -137,7 +139,8 @@ SYSTEMTIME systemTimeAdd(SYSTEMTIME s, double seconds) {
 	return s;
 }
 
-FILETIME DllFolderPlugin::lookupLatest(const std::wstring& path, std::wstring& result) {
+FILETIME DllFolderPlugin::lookupLatest(const std::wstring& path, std::wstring& result) const
+{
 	FileLogger dbg(mDbg, "lookupLatest " + wstringConvertToString(path));
 	std::wstring search_path = path + L"/*.dll";
 	FILETIME latestTs = { 0, 0 };

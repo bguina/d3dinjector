@@ -2,4 +2,4 @@
 
 #include "../game/WowVector3f.h"
 
-typedef struct WowVector3f Vector3f;
+typedef WowVector3f Vector3f;

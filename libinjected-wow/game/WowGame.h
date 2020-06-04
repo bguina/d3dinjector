@@ -15,17 +15,17 @@ class IWindowController;
 class WowGame : public AGame
 {
 public:
-	WowGame(long pid, const uint8_t* baseAddr);
+	WowGame(long pid, const uint8_t* baseAddress);
 	~WowGame();
 
-	const IWindowController* getWindowController() const;
+	const IWindowController* getWindowController() const override;
 	IWindowController* getWindowController() override;
 
 	void update();
 
 	bool isLoggedIn() const;
 	bool isLoading() const;
-	bool isInGame() const;
+	bool isInGameOrLoading() const;
 
 	const ObjectManager& getObjectManager() const;
 
@@ -65,7 +65,7 @@ inline std::ostream& operator<<(
 	ObjectManager objMgr = obj.getObjectManager();
 	out << objMgr;
 
-	if (obj.isInGame()) {
+	if (obj.isInGameOrLoading()) {
 		SpellBook spellBookMgr = obj.getSpellBook();
 		out << spellBookMgr;
 	}

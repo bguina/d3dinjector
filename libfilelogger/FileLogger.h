@@ -30,6 +30,10 @@ public:
 		return mOfs;
 	}
 
+	inline std::ostream& i() { return (*this) << info; }
+	inline std::ostream& w() { return (*this) << warn; }
+	inline std::ostream& e() { return (*this) << err; }
+
 private:
 	FileLogger(const std::string& tag, const std::string& prefix);
 

@@ -1,15 +1,16 @@
 
+#include "dump/WowGameOffsets.h"
 #include "d3dutils.h"
 #include "WowGame.h"
 
 #include "windowcontroller/PostMessageWindowController.h"
 #include "observer/ARecurrentServerObserver.h"
 
-WowGame::WowGame(long pid, const uint8_t* baseAddr) :
-	AGame(pid, baseAddr),
+WowGame::WowGame(long pid, const uint8_t* baseAddress) :
+	AGame(pid, baseAddress),
 	mDbg("WowGame"),
-	mObjMgr((const uint8_t**)(getAddress() + 0x2372D48)),
-	mSpellBook((const uint8_t*)(getAddress() + 0x2595D78)),
+	mObjMgr((const uint8_t**)(getAddress() + WowGameOffsets::WowObjectManager::OffsetObjectManagerBase)),
+	mSpellBook((const uint8_t*)(getAddress() + WowGameOffsets::WowSpellBook::OffsetSpellBookBase)),
 	mWindowController(std::make_unique<PostMessageWindowController>(FindMainWindow(pid)))
 {
 
@@ -20,14 +21,14 @@ WowGame::~WowGame() {
 }
 
 bool WowGame::isLoggedIn() const {
-	return isInGame() && !isLoading();  // fixme
+	return isInGameOrLoading() && !isLoading();  // fixme
 }
 
 bool WowGame::isLoading() const {
-	return *(int*)(getAddress() + 0x2260D50);
+	return *(int*)(getAddress() + 0x2279D30);
 }
 
-bool WowGame::isInGame() const {
+bool WowGame::isInGameOrLoading() const {
 	return NULL != mObjMgr.getBaseAddress(); // fixme reliable?
 }
 
@@ -85,7 +86,6 @@ const char* WowGame::getVersion() const {
 int  WowGame::getInGameFlags() const {
 	return *(int*)(getAddress() + 0x2594F40);
 }
-
 
 
 typedef char(__fastcall* Intersect) (const WowVector3f*, const WowVector3f*, WowVector3f*, __int64, int);

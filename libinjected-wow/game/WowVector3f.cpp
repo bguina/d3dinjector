@@ -5,18 +5,18 @@ float WowVector3f::operator[](int index) const {
 }
 
 WowVector3f WowVector3f::translatedByX(float d) const {
-	return WowVector3f(*this).translateByX(d);
+	return WowVector3f(*this).translate_by_x(d);
 }
 
 WowVector3f WowVector3f::translatedByY(float d) const {
-	return WowVector3f(*this).translatedByY(d);
+	return WowVector3f(*this).translateByY(d);
 }
 
 WowVector3f WowVector3f::translatedByZ(float d) const {
-	return WowVector3f(*this).translatedByZ(d);
+	return WowVector3f(*this).translateByZ(d);
 }
 
-WowVector3f& WowVector3f::translateByX(float d) {
+WowVector3f& WowVector3f::translate_by_x(float d) {
 	position.x += d;
 	return *this;
 }
@@ -30,8 +30,6 @@ WowVector3f& WowVector3f::translateByZ(float d) {
 	position.z += d;
 	return *this;
 }
-
-
 
 float WowVector3f::getDistanceTo(const WowVector3f& to) const {
 	auto dx = to.position.x - position.x;

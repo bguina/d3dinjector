@@ -6,11 +6,10 @@
 #include "../WowVector3f.h"
 #include "../dump/WowGameDescriptors.h"
 
-
 class WowObject : public MemoryObject
 {
 public:
-	WowObject(const uint8_t* baseAddr);
+	WowObject(const uint8_t* baseAddress);
 
 	template<class T>
 	const T& downcast() const {

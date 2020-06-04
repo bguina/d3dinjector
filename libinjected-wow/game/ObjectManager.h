@@ -1,14 +1,11 @@
 #pragma once
 
-#include <memory> // for std::allocator, std::shared_ptr
-#include <cstdint>
-#include <vector>
+#include <memory> // std::shared_ptr
 #include <list>
 #include <map>
 #include <memory>
-#include <iostream>
 
-#include "object/WowActivePlayerObject.h"
+#include "WowObjects.h"
 
 /*
 	- what are smart pointers?
@@ -21,7 +18,7 @@
 class ObjectManager
 {
 public:
-	ObjectManager(const uint8_t** baseAddr);
+	ObjectManager(const uint8_t** baseAddress);
 
 	bool isEnabled() const;
 
@@ -36,7 +33,8 @@ public:
 	std::map<WowGuid128, std::shared_ptr<WowObject>>::iterator end();
 
 	template<class T>
-	const std::shared_ptr<const T> getObjectByGuid(const WowGuid128& guid) const {
+	std::shared_ptr<const T> getObjectByGuid(const WowGuid128& guid) const
+	{
 		static_assert(std::is_base_of<WowObject, T>::value, "T must inherit from WowObject");
 
 		for (auto it = begin(); it != end(); ++it) {
@@ -51,12 +49,14 @@ public:
 	}
 
 	template<class T>
-	std::shared_ptr<T> getObjectByGuid(const WowGuid128& guid) {
+	std::shared_ptr<T> getObjectByGuid(const WowGuid128& guid)
+	{
 		return std::const_pointer_cast<T>(std::as_const(*this).getObjectByGuid<T>(guid));
 	}
 
 	template<class T >
-	std::shared_ptr<T> getObjectBySummonedGuid(const WowGuid128& guid) {
+	std::shared_ptr<T> getObjectBySummonedGuid(const WowGuid128& guid)
+	{
 		static_assert(std::is_base_of<WowObject, T>::value, "T must inherit from WowObject");
 
 		for (auto it = begin(); it != end(); ++it) {
@@ -71,7 +71,8 @@ public:
 	}
 
 	template<class T >
-	const std::shared_ptr<const T> anyOfType(WowObjectType type) const {
+	std::shared_ptr<const T> anyOfType(WowObjectType type) const
+	{
 		static_assert(std::is_base_of<WowObject, T>::value, "T must inherit from WowObject");
 
 		for (auto it = begin(); it != end(); ++it) {
@@ -83,12 +84,14 @@ public:
 	}
 
 	template<class T>
-	std::shared_ptr<T> anyOfType(WowObjectType type) {
+	std::shared_ptr<T> anyOfType(WowObjectType type)
+	{
 		return std::const_pointer_cast<T>(std::as_const(*this).anyOfType<T>(type));
 	}
 
 	template<class T>
-	std::list<std::shared_ptr<const T>> allOfType(WowObjectType type) const {
+	std::list<std::shared_ptr<const T>> allOfType(WowObjectType type) const
+	{
 		static_assert(std::is_base_of<WowObject, T>::value, "T must inherit from WowObject");
 		std::list<std::shared_ptr<const T>> results;
 
@@ -101,7 +104,8 @@ public:
 	}
 
 	template<class T>
-	std::list<std::shared_ptr<T>> allOfType(WowObjectType type) {
+	std::list<std::shared_ptr<T>> allOfType(WowObjectType type)
+	{
 		static_assert(std::is_base_of<WowObject, T>::value, "T must inherit from WowObject");
 		std::list<std::shared_ptr<T>> results;
 
@@ -114,7 +118,8 @@ public:
 	}
 
 	template<class T>
-	std::list<std::shared_ptr<const T>> allOfType() const {
+	std::list<std::shared_ptr<const T>> allOfType() const
+	{
 		static_assert(std::is_base_of<WowObject, T>::value, "T must inherit from WowObject");
 		std::list<std::shared_ptr<const T>> results;
 
@@ -128,7 +133,8 @@ public:
 	}
 
 	template<class T>
-	std::list<std::shared_ptr<T>> allOfType() {
+	std::list<std::shared_ptr<T>> allOfType()
+	{
 		static_assert(std::is_base_of<WowObject, T>::value, "T must inherit from WowObject");
 		std::list<std::shared_ptr<T>> results;
 
@@ -145,7 +151,7 @@ public:
 
 	std::shared_ptr<WowActivePlayerObject> getActivePlayer();
 
-	size_t getObjectsCount() const;
+	size_t get_objects_count() const;
 
 private:
 	const uint8_t** mPointerAddr;
@@ -154,7 +160,7 @@ private:
 
 inline std::ostream& operator<<(std::ostream& out, const ObjectManager& objMgr)
 {
-	out << "[ObjectManager@" << (void*)objMgr.getBaseAddress() << ":" << (objMgr.isEnabled() ? "ENABLED" : "DISABLED") << " with " << objMgr.getObjectsCount() << " objects]" << std::endl;
+	out << "[ObjectManager@" << (void*)objMgr.getBaseAddress() << ":" << (objMgr.isEnabled() ? "ENABLED" : "DISABLED") << " with " << objMgr.get_objects_count() << " objects]" << std::endl;
 
 
 	if (NULL != objMgr.getBaseAddress()) {

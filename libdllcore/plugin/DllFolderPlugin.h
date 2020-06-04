@@ -18,7 +18,7 @@ public:
 
 protected:
 	virtual bool loadLibrary(const std::wstring& dllPath) override;
-	FILETIME lookupLatest(const std::wstring& path, std::wstring& result);
+	FILETIME lookupLatest(const std::wstring& path, std::wstring& result) const;
 
 	bool mKeepAlive;
 	std::wstring mFolder;

@@ -15,6 +15,7 @@ struct WowGameOffsets {
 	};
 
 	struct WowObjectManager {
+		static const uint64_t OffsetObjectManagerBase = 0x238BD08;
 		static const uint64_t OffsetFirstObject = 0x18;
 		static const uint64_t OffsetNextObject = 0x70;
 	};
@@ -41,7 +42,9 @@ struct WowGameOffsets {
 		static const uint64_t DescriptorOffsetUnitDynamicflags = 0x174;
 	};
 
-	struct WowSpellbook {
-		static const uint64_t FunctionClickSpell = 0x7687C0;
+	struct WowSpellBook {
+		static const uint64_t OffsetSpellBookBase = 0x25AED38;
+		static const uint64_t FunctionCastSpell =  0xDC95C0;
+		static const uint64_t FunctionClickSpell = 0x76DC00;
 	};
 };

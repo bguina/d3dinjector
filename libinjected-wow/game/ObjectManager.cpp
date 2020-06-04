@@ -1,24 +1,16 @@
-#include <set>
-
 #include "ObjectManager.h"
 
 #include "FileLogger.h"
 #include "dump/WowGameDescriptors.h"
 #include "dump/WowGameOffsets.h"
 
-#include "object/WowContainerObject.h"
-#include "object/WowItemObject.h"
-#include "object/WowLootObject.h"
-#include "object/WowCorpseObject.h"
-#include "object/WowUnitObject.h"
-#include "object/WowPlayerObject.h"
-#include "object/WowActivePlayerObject.h"
+#include "WowObjects.h"
 #include "object/WowUnimplementedObject.h"
 
 ObjectManager::ObjectManager(
-	const uint8_t** baseAddr
+	const uint8_t** baseAddress
 ) :
-	mPointerAddr(baseAddr)
+	mPointerAddr(baseAddress)
 {}
 
 bool ObjectManager::isEnabled() const {
@@ -136,6 +128,6 @@ std::shared_ptr<WowActivePlayerObject> ObjectManager::getActivePlayer() {
 	return anyOfType<WowActivePlayerObject>(WowObjectType::ActivePlayer);
 }
 
-size_t ObjectManager::getObjectsCount() const {
+size_t ObjectManager::get_objects_count() const {
 	return mObjects.size();
 }

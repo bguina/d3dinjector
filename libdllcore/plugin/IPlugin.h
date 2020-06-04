@@ -5,7 +5,7 @@
 class IPlugin
 {
 public:
-	virtual ~IPlugin() {};
+	virtual ~IPlugin() = default;;
 	virtual std::string getTag() const = 0;
 
 	virtual bool onD3dRender() = 0;
