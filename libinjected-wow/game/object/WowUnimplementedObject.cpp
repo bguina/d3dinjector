@@ -1,7 +1,7 @@
 #include "WowUnimplementedObject.h"
 
-WowUnimplementedObject::WowUnimplementedObject(const uint8_t* baseAddr) :
-	WowObject(baseAddr)
+WowUnimplementedObject::WowUnimplementedObject(const uint8_t* baseAddress) :
+	WowObject(baseAddress)
 {
 
 }

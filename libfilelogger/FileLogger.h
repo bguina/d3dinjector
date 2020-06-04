@@ -30,9 +30,12 @@ public:
 		return mOfs;
 	}
 
-	inline std::ostream& i() { return (*this) << info; }
-	inline std::ostream& w() { return (*this) << warn; }
-	inline std::ostream& e() { return (*this) << err; }
+	std::ostream& d() { return (*this) << debug; }
+	std::ostream& v() { return (*this) << verbose; }
+	std::ostream& i() { return (*this) << info; }
+	std::ostream& w() { return (*this) << warn; }
+	std::ostream& e() { return (*this) << err; }
+	std::string endl() { return normal + '\n'; }
 
 private:
 	FileLogger(const std::string& tag, const std::string& prefix);

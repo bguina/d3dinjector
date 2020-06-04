@@ -17,20 +17,20 @@ public:
 
 	float operator[](int index) const;
 
-	WowVector3f translated_by_x(float d) const;
-	WowVector3f translated_by_y(float d) const;
-	WowVector3f translated_by_z(float d) const;
+	WowVector3f translatedByX(float d) const;
+	WowVector3f translatedByY(float d) const;
+	WowVector3f translatedByZ(float d) const;
 
 	WowVector3f& translate_by_x(float d);
-	WowVector3f& translate_by_y(float d);
-	WowVector3f& translate_by_z(float d);
+	WowVector3f& translateByY(float d);
+	WowVector3f& translateByZ(float d);
 
-	float get_distance_to(const WowVector3f& to) const;
-	float get_flight_distance_to(const WowVector3f& to) const;
+	float getDistanceTo(const WowVector3f& to) const;
+	float getFlightDistanceTo(const WowVector3f& to) const;
 
-	int get_facing_degrees_to(const WowVector3f& to) const;
-	int get_facing_delta_degrees(int angle, const WowVector3f& to) const;
-	WowVector3f get_position_at_degrees_by_distance(int angle, float d) const;
+	int getFacingDegreesTo(const WowVector3f& to) const;
+	int getFacingDeltaDegrees(int angle, const WowVector3f& to) const;
+	WowVector3f getPositionAtDegreesByDistance(int angle, float d) const;
 };
 
 inline std::ostream& operator<<(

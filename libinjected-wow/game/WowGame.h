@@ -17,15 +17,18 @@ class WowGame : public AGame
 public:
 	WowGame(long pid, const uint8_t* baseAddress);
 	~WowGame();
-
+	
 	const IWindowController* getWindowController() const override;
 	IWindowController* getWindowController() override;
 
+	long long getTime() const;
 	void update();
 
 	bool isLoggedIn() const;
 	bool isLoading() const;
 	bool isInGameOrLoading() const;
+	
+	const uint32_t* getCamera() const;
 
 	const ObjectManager& getObjectManager() const;
 

@@ -117,7 +117,7 @@ bool WowMaxBot::onEvaluate() {
 				mDbg.i("looking for a new unit to attack");
 				for (auto it = allUnits.begin(); it != allUnits.end(); it++)
 				{
-					if (self->isFriendly(*mGame, *(*it)) || (abs(self->getUnitLevel() - (*it)->getUnitLevel()) > 10) &&
+					if (self->isFriendly(*mGame, *(*it)) || (abs(self->getLevel() - (*it)->getLevel()) > 10) &&
 						mBlacklistedGuids.find((*it)->getGuid()) == mBlacklistedGuids.end())
 					{
 						mBlacklistedGuids.insert((*it)->getGuid());
@@ -141,7 +141,7 @@ bool WowMaxBot::onEvaluate() {
 						Vector3f nextPosition;
 
 						if (targetUnit != nullptr) {
-							if (mPathFinder->moveAlong(selfPosition, nextPosition) && targetUnit->getPosition().get_distance_to(nextPosition) < 50)
+							if (mPathFinder->moveAlong(selfPosition, nextPosition) && targetUnit->getPosition().getDistanceTo(nextPosition) < 50)
 							{
 								mTargetUnit = targetUnit;
 							}
@@ -160,10 +160,10 @@ bool WowMaxBot::onEvaluate() {
 			if (nullptr != mTargetUnit && self->getUnitHealthPercentage() > 80) {
 				mDbg.i("targetting some unit...");
 
-				int delta = self->getPosition().get_facing_delta_degrees(self->getFacingDegrees(), mTargetUnit->getPosition());
+				int delta = self->getPosition().getFacingDeltaDegrees(self->getFacingDegrees(), mTargetUnit->getPosition());
 				int anglePrecision = 10;
 
-				if (self->getPosition().get_distance_to(mTargetUnit->getPosition()) > 25 && mTargetUnit->getUnitHealth() > 0)
+				if (self->getPosition().getDistanceTo(mTargetUnit->getPosition()) > 25 && mTargetUnit->getUnitHealth() > 0)
 				{
 					mDbg << FileLogger::info << "My position" << self->getPosition() << FileLogger::normal << std::endl;
 					mDbg << FileLogger::info << "target unit " << mTargetUnit->getGuid().upper() << " still out of reach" << mTargetUnit->getPosition() << FileLogger::normal << std::endl;
@@ -197,7 +197,7 @@ bool WowMaxBot::onEvaluate() {
 
 					mDbg << FileLogger::info << "moving to " << mTargetUnit->getPosition() << FileLogger::normal << std::endl;
 
-					mDbg << FileLogger::info << " target angle is" << self->getPosition().get_facing_degrees_to(mTargetUnit->getPosition()) << " delta angle is " << self->getPosition().get_facing_delta_degrees(self->getFacingDegrees(), mTargetUnit->getPosition()) << FileLogger::normal << std::endl;
+					mDbg << FileLogger::info << " target angle is" << self->getPosition().getFacingDegreesTo(mTargetUnit->getPosition()) << " delta angle is " << self->getPosition().getFacingDeltaDegrees(self->getFacingDegrees(), mTargetUnit->getPosition()) << FileLogger::normal << std::endl;
 				}
 				else if (delta > anglePrecision || delta < -anglePrecision) {
 					mGame->getWindowController()->releaseAllKeys();
@@ -230,8 +230,8 @@ bool WowMaxBot::onEvaluate() {
 					}
 
 
-					else if (self->getPosition().get_distance_to(mTargetUnit->getPosition()) >= 5 &&
-						self->getPosition().get_distance_to(mTargetUnit->getPosition()) <= 13 &&
+					else if (self->getPosition().getDistanceTo(mTargetUnit->getPosition()) >= 5 &&
+						self->getPosition().getDistanceTo(mTargetUnit->getPosition()) <= 13 &&
 						mTargetUnit->getTargetGuid() != self->getGuid())
 					{
 						mGame->getWindowController()->pressKey(WinVirtualKey::WVK_S, true);
@@ -254,7 +254,7 @@ bool WowMaxBot::onEvaluate() {
 						mInteractWith = false;
 					}
 
-					else if (self->getPosition().get_distance_to(mTargetUnit->getPosition()) < 5 && cacAttack) {
+					else if (self->getPosition().getDistanceTo(mTargetUnit->getPosition()) < 5 && cacAttack) {
 						mDbg.i("Case -> raptor strike....");
 						mGame->getSpellBook().castSpell(*mGame, 14262, mTargetUnit->getGuidPtr());//2973 rank1 raptor strike //rank2 14260 //rank3 14261
 						cacAttack = false;

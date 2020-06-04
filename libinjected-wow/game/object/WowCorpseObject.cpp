@@ -1,7 +1,7 @@
 #include "WowCorpseObject.h"
 
-WowCorpseObject::WowCorpseObject(const uint8_t* baseAddr) :
-	WowObject(baseAddr)
+WowCorpseObject::WowCorpseObject(const uint8_t* baseAddress) :
+	WowObject(baseAddress)
 {
 
 }

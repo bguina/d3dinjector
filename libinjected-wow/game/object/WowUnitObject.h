@@ -8,7 +8,7 @@ class WowGame;
 class WowUnitObject : public WowObject
 {
 public:
-	WowUnitObject(const uint8_t* baseAddr);
+	WowUnitObject(const uint8_t* baseAddress);
 
 	WowUnitClass getUnitClass() const;
 
@@ -16,7 +16,7 @@ public:
 
 	WowUnitRace getUnitRace() const;
 
-	int getUnitLevel() const;
+	int getLevel() const;
 
 	int getUnitHealth() const;
 
@@ -39,6 +39,9 @@ public:
 	WowGuid128* getTargetGuidPtr() const;
 
 	void moveTo(WowGame& game, const WowVector3f& destination);
+
+	bool evaluateAggroDistanceWith(const WowUnitObject& unit) const;
+
 };
 
 inline std::ostream& operator<<(
@@ -47,7 +50,7 @@ inline std::ostream& operator<<(
 	)
 {
 	out << (WowObject)obj
-		<< ": [LVL" << obj.getUnitLevel() << "]" << obj.getUnitClassLabel()
+		<< ": [LVL" << obj.getLevel() << "]" << obj.getUnitClassLabel()
 		<< ": [SummonedBy Guid = " << obj.getSummonedBy().upper() << obj.getSummonedBy().lower()
 		<< " health=" << obj.getUnitHealth() << "/" << obj.getUnitMaxHealth()
 		<< " energy=" << obj.getUnitEnergy() << "/" << obj.getUnitMaxEnergy();

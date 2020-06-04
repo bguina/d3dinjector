@@ -1,6 +1,7 @@
 #include "WowItemObject.h"
 
-WowItemObject::WowItemObject(const uint8_t* baseAddr) : WowObject(baseAddr)
+WowItemObject::WowItemObject(const uint8_t* baseAddress) :
+	WowObject(baseAddress)
 {
 
 }

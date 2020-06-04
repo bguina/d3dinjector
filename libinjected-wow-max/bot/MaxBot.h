@@ -15,7 +15,7 @@ public:
 
 	virtual void onResume() override;
 	virtual void onPause() override;
-	virtual void onEvaluate() override;
+	virtual bool onEvaluate() override;
 
 	virtual bool handleWowMessage(ServerWowMessage& cl) override;
 

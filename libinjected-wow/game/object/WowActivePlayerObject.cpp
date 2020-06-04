@@ -4,13 +4,9 @@
 
 #include "../dump/WowGameOffsets.h"
 
-WowActivePlayerObject::WowActivePlayerObject(const uint8_t* baseAddr) :
-	WowPlayerObject(baseAddr)
+WowActivePlayerObject::WowActivePlayerObject(const uint8_t* baseAddress) :
+	WowPlayerObject(baseAddress)
 {
-}
-
-const uint32_t* WowActivePlayerObject::getCamera(const WowGame& game) {
-	return game.get<const uint32_t*>(0xD65D60);
 }
 
 char WowActivePlayerObject::canAttack(const WowGame& game, const WowUnitObject& target) const {

@@ -1,7 +1,7 @@
 #include "WowLootObject.h"
 
 WowLootObject::WowLootObject(
-	const uint8_t* baseAddr
-) : WowObject(baseAddr)
+	const uint8_t* baseAddress
+) : WowObject(baseAddress)
 {
 }

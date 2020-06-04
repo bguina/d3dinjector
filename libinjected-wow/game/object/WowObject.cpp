@@ -3,12 +3,14 @@
 
 #include "WowObject.h"
 
-WowObject::WowObject(const uint8_t* baseAddress) : MemoryObject(baseAddress) {
+WowObject::WowObject(const uint8_t* baseAddress) :
+	MemoryObject(baseAddress)
+{
 
 }
 
 bool WowObject::vanished() const {
-	return 0 == getAddress();
+	return nullptr == getAddress();
 }
 
 const uint8_t* WowObject::getDescriptor() const {
@@ -83,19 +85,19 @@ int WowObject::getFacingDegrees() const {
 
 // Position helpers
 float WowObject::getDistanceTo(const WowObject& object) const {
-	return getPosition().get_distance_to(object.getPosition());
+	return getPosition().getDistanceTo(object.getPosition());
 }
 
 float WowObject::getFlightDistanceTo(const WowObject& object) const {
-	return getPosition().get_flight_distance_to(object.getPosition());
+	return getPosition().getFlightDistanceTo(object.getPosition());
 }
 
 int WowObject::getFacingDegreesTo(const WowObject& object) const {
-	return getPosition().get_facing_degrees_to(object.getPosition());
+	return getPosition().getFacingDegreesTo(object.getPosition());
 }
 
 int WowObject::getFacingDeltaDegrees(const WowObject& object) const {
-	return getPosition().get_facing_delta_degrees(getFacingDegrees(), object.getPosition());
+	return getPosition().getFacingDeltaDegrees(getFacingDegrees(), object.getPosition());
 }
 
 // protected:

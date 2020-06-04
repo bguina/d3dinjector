@@ -5,7 +5,7 @@
 class WowUnimplementedObject : public WowObject
 {
 public:
-	WowUnimplementedObject(const uint8_t* baseAddr);
+	WowUnimplementedObject(const uint8_t* baseAddress);
 };
 
 inline std::ostream& operator<<(

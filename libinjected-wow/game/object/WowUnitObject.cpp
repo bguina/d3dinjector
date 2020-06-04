@@ -3,10 +3,11 @@
 
 #include "WowUnitObject.h"
 
-WowUnitObject::WowUnitObject(
-	const uint8_t* baseAddr
-) : WowObject(baseAddr)
-{}
+WowUnitObject::WowUnitObject(const uint8_t* baseAddress) :
+	WowObject(baseAddress)
+{
+	
+}
 
 WowUnitClass WowUnitObject::getUnitClass() const {
 	return *reinterpret_cast<const WowUnitClass*>(getDescriptor() + WowGameOffsets::WowUnitObject::DescriptorOffsetClass);
@@ -32,7 +33,7 @@ WowUnitRace WowUnitObject::getUnitRace() const {
 	return *reinterpret_cast<const WowUnitRace*>(getDescriptor() + WowGameOffsets::WowUnitObject::DescriptorOffsetRace);
 }
 
-int WowUnitObject::getUnitLevel() const {
+int WowUnitObject::getLevel() const {
 	return *(getDescriptor() + 0x134);
 }
 
@@ -79,7 +80,7 @@ WowGuid128* WowUnitObject::getTargetGuidPtr() const {
 }
 
 void WowUnitObject::moveTo(WowGame& game, const WowVector3f& destination) {
-	int delta = getPosition().get_facing_delta_degrees(getFacingDegrees(), destination);
+	int delta = getPosition().getFacingDeltaDegrees(getFacingDegrees(), destination);
 	int anglePrecision = 10;
 
 	auto windowController = game.getWindowController();
@@ -88,4 +89,12 @@ void WowUnitObject::moveTo(WowGame& game, const WowVector3f& destination) {
 	windowController->pressKey(WinVirtualKey::WVK_D, delta < -anglePrecision);
 	// move forward if approximately on the right facing
 	windowController->pressKey(WinVirtualKey::WVK_W, abs(delta) < anglePrecision * 2);
+}
+
+bool WowUnitObject::evaluateAggroDistanceWith(const WowUnitObject& unit) const
+{
+	auto levelDifference(getLevel() - unit.getLevel());
+	
+	// https://wowwiki.fandom.com/wiki/Aggro_radius
+	return 22 + (levelDifference * 1.0f);
 }

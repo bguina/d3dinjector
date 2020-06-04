@@ -1,6 +1,7 @@
 #include "WowPlayerObject.h"
 
-WowPlayerObject::WowPlayerObject(
-	const uint8_t* baseAddr
-) : WowUnitObject(baseAddr)
-{}
+WowPlayerObject::WowPlayerObject(const uint8_t* baseAddress) :
+	WowUnitObject(baseAddress)
+{
+	
+}

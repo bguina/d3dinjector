@@ -5,7 +5,7 @@
 class WowContainerObject : public WowObject
 {
 public:
-	WowContainerObject(const uint8_t* baseAddr);
+	WowContainerObject(const uint8_t* baseAddress);
 };
 
 inline std::ostream& operator<<(

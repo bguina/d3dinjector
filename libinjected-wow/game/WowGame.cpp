@@ -55,6 +55,15 @@ IWindowController* WowGame::getWindowController() {
 	return mWindowController.get();
 }
 
+long long WowGame::getTime() const
+{
+	return GetTickCount64();
+}
+
+const uint32_t* WowGame::getCamera() const {
+	return get<const uint32_t*>(0xD65D60);
+}
+
 const ObjectManager& WowGame::getObjectManager() const {
 	return mObjMgr;
 }

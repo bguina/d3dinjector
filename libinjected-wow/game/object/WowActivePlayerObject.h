@@ -7,13 +7,11 @@ class WowGame;
 class WowActivePlayerObject : public WowPlayerObject
 {
 public:
-	WowActivePlayerObject(const uint8_t* baseAddr);
+	WowActivePlayerObject(const uint8_t* baseAddress);
 
 	char canAttack(const WowGame& game, const WowUnitObject& target) const;
 
 	bool isFriendly(const WowGame& game, const WowUnitObject& target) const;
-
-	const uint32_t* getCamera(const WowGame& game);
 
 	uint64_t interactWith(const WowGame& game, const WowGuid128* targetGuid);
 };
