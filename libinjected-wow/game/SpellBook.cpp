@@ -71,7 +71,7 @@ const SpellbookDescriptor* SpellBook::getSpell(uint32_t spellId) const {
 typedef uint64_t* (__fastcall PetInfo_FindSpellById)(uint32_t spellId);
 
 uint64_t* SpellBook::petInfoFindSpellById(const WowGame& game, const uint32_t petSpellId) {
-	return (game.getFunction<PetInfo_FindSpellById>(0xF03B20))(petSpellId);
+	return (game.getFunction<PetInfo_FindSpellById>(WowGameOffsets::WowGame::FunctionPetInfo_FindSpellById))(petSpellId);
 }
 
 //void __fastcall sub_F05920(int* a1, __int64 GUID, int 0, __int64 ptr -=> 0)

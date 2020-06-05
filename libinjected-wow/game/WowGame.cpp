@@ -10,10 +10,9 @@ WowGame::WowGame(long pid, const uint8_t* baseAddress) :
 	AGame(pid, baseAddress),
 	mDbg("WowGame"),
 	mObjMgr((const uint8_t**)(getAddress() + WowGameOffsets::WowObjectManager::OffsetObjectManagerBase)),
-	mSpellBook((const uint8_t*)(getAddress() + WowGameOffsets::WowSpellBook::OffsetSpellBookBase)),
+	mSpellBook((const uint8_t*)(getAddress() + WowGameOffsets::WowGame::OffsetSpellBookBase)),
 	mWindowController(std::make_unique<PostMessageWindowController>(FindMainWindow(pid)))
 {
-
 }
 
 WowGame::~WowGame() {
@@ -25,11 +24,11 @@ bool WowGame::isLoggedIn() const {
 }
 
 bool WowGame::isLoading() const {
-	return *(int*)(getAddress() + 0x2279D30);
+	return *(uint32_t*)(getAddress() + WowGameOffsets::WowGame::OffsetIsLoadingOrConnecting);
 }
 
 bool WowGame::isInGameOrLoading() const {
-	return NULL != mObjMgr.getBaseAddress(); // fixme reliable?
+	return nullptr != mObjMgr.getBaseAddress(); // fixme reliable?
 }
 
 void WowGame::update() {
@@ -44,7 +43,6 @@ void WowGame::update() {
 		it->second->capture(*this);
 		mDbg.i("GameObserver: capture of " + it->first);
 	}
-
 }
 
 const IWindowController* WowGame::getWindowController() const {
@@ -61,7 +59,7 @@ long long WowGame::getTime() const
 }
 
 const uint32_t* WowGame::getCamera() const {
-	return get<const uint32_t*>(0xD65D60);
+	return get<const uint32_t*>(WowGameOffsets::WowCamera::OffsetCameraBase);
 }
 
 const ObjectManager& WowGame::getObjectManager() const {
@@ -81,26 +79,25 @@ SpellBook& WowGame::getSpellBook() {
 }
 
 const char* WowGame::getVersionBuild() const {
-	return (const char*)(getAddress() + 0x1C3531C);
+	return (const char*)(getAddress() + WowGameOffsets::WowGame::OffsetBuildVersion);
 }
 
 const char* WowGame::getReleaseDate() const {
-	return (const char*)(getAddress() + 0x1C3531C);
+	return (const char*)(getAddress() + WowGameOffsets::WowGame::OffsetReleaseDate);
 }
 
 const char* WowGame::getVersion() const {
-	return (const char*)(getAddress() + 0x1C35314);
+	return (const char*)(getAddress() + WowGameOffsets::WowGame::OffsetVersion);
 }
 
 int  WowGame::getInGameFlags() const {
-	return *(int*)(getAddress() + 0x2594F40);
+	return *(int*)(getAddress() + WowGameOffsets::WowGame::OffsetInGameFlags);
 }
-
 
 typedef char(__fastcall* Intersect) (const WowVector3f*, const WowVector3f*, WowVector3f*, __int64, int);
 
 bool WowGame::traceLine(const WowVector3f& from, const WowVector3f& to, uint64_t flags) const {
-	Intersect intersect = (Intersect)(getAddress() + 0x114AC10);
+	Intersect intersect = (Intersect)(getAddress() + WowGameOffsets::WowGame::FunctionWorldFrame_Intersect);
 	WowVector3f collision = WowVector3f();
 
 	return intersect(&to, &from, &collision, flags, 0);
