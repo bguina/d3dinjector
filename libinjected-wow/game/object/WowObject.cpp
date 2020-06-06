@@ -21,7 +21,7 @@ WowGuid128 WowObject::getGuid() const {
 	return ((WowGuid128*)(getAddress() + WowGameOffsets::WowObject::OffsetGuid))[0];
 }
 
-WowGuid128* WowObject::getGuidPtr() const {
+const WowGuid128* WowObject::getGuidPtr() const {
 	return ((WowGuid128*)(getAddress() + WowGameOffsets::WowObject::OffsetGuid));
 }
 

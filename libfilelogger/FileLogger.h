@@ -13,13 +13,13 @@ public:
 	void operator=(FileLogger const&) = delete;
 	virtual ~FileLogger();
 
-	virtual const std::string& getTag() const override;
+	const std::string& getTag() const override;
 
 	// append output for the next file flush
-	virtual void log(const std::string& msg) override;
-	virtual void i(const std::string& msg) override;
-	virtual void w(const std::string& msg) override;
-	virtual void e(const std::string& msg) override;
+	void log(const std::string& msg) override;
+	void i(const std::string& msg) override;
+	void w(const std::string& msg) override;
+	void e(const std::string& msg) override;
 
 	// clear previous file content
 	void clear();
@@ -30,11 +30,11 @@ public:
 		return mOfs;
 	}
 
-	std::ostream& d() { return (*this) << debug; }
-	std::ostream& v() { return (*this) << verbose; }
-	std::ostream& i() { return (*this) << info; }
-	std::ostream& w() { return (*this) << warn; }
-	std::ostream& e() { return (*this) << err; }
+	std::string d() { return debug; }
+	std::string v() { return verbose; }
+	std::string i() { return info; }
+	std::string w() { return warn; }
+	std::string e() { return err; }
 	std::string endl() { return normal + '\n'; }
 
 private:

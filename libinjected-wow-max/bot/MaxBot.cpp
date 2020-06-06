@@ -62,13 +62,13 @@ bool WowMaxBot::onEvaluate() {
 
 		if (myPet != nullptr) {
 
-			mDbg << FileLogger::info << "myPet == " << (void*)myPet->getAddress() << " combat == " << myPet->isInCombat() << " Life == " << myPet->getUnitHealthPercentage() << FileLogger::normal << std::endl;
+			mDbg << FileLogger::info << "myPet == " << (void*)myPet->getAddress() << " combat == " << myPet->isInCombat() << " Life == " << myPet->getHealthPercent() << FileLogger::normal << std::endl;
 
 		}
 
 		if (secondSelf != nullptr) {
 
-			mDbg << FileLogger::info << "self == " << (void*)self->getAddress() << " combat == " << self->isInCombat() << " Life == " << self->getUnitHealthPercentage() << FileLogger::normal << std::endl;
+			mDbg << FileLogger::info << "self == " << (void*)self->getAddress() << " combat == " << self->isInCombat() << " Life == " << self->getHealthPercent() << FileLogger::normal << std::endl;
 
 			/*
 			Debug to find all the pet spell ID
@@ -157,13 +157,13 @@ bool WowMaxBot::onEvaluate() {
 			}
 
 			// Are we far away the target unit?
-			if (nullptr != mTargetUnit && self->getUnitHealthPercentage() > 80) {
+			if (nullptr != mTargetUnit && self->getHealthPercent() > 80) {
 				mDbg.i("targetting some unit...");
 
 				int delta = self->getPosition().getFacingDeltaDegrees(self->getFacingDegrees(), mTargetUnit->getPosition());
 				int anglePrecision = 10;
 
-				if (self->getPosition().getDistanceTo(mTargetUnit->getPosition()) > 25 && mTargetUnit->getUnitHealth() > 0)
+				if (self->getPosition().getDistanceTo(mTargetUnit->getPosition()) > 25 && mTargetUnit->getHealth() > 0)
 				{
 					mDbg << FileLogger::info << "My position" << self->getPosition() << FileLogger::normal << std::endl;
 					mDbg << FileLogger::info << "target unit " << mTargetUnit->getGuid().upper() << " still out of reach" << mTargetUnit->getPosition() << FileLogger::normal << std::endl;
@@ -210,7 +210,7 @@ bool WowMaxBot::onEvaluate() {
 					mGame->getWindowController()->releaseAllKeys();
 					// Unit gets "killed" (blacklisted for now)
 
-					if (mTargetUnit->getUnitHealth() == 0)
+					if (mTargetUnit->getHealth() == 0)
 					{
 						mDbg.i("Case -> Looting....");
 						toLoop++;
@@ -262,7 +262,7 @@ bool WowMaxBot::onEvaluate() {
 
 				}
 			}
-			else if (self->getUnitHealthPercentage() > 80) {
+			else if (self->getHealthPercent() > 80) {
 				//mDbg.i("no mTargetUnit");
 				//mDbg.flush();
 				if (mPathFinder != nullptr) {

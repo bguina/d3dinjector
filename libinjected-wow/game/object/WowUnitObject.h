@@ -10,37 +10,43 @@ class WowUnitObject : public WowObject
 public:
 	WowUnitObject(const uint8_t* baseAddress);
 
-	WowUnitClass getUnitClass() const;
+	virtual WowUnitClass getClass() const;
 
-	std::string getUnitClassLabel() const;
+	virtual std::string getClassLabel() const;
 
-	WowUnitRace getUnitRace() const;
+	virtual WowUnitRace getRace() const;
 
-	int getLevel() const;
+	virtual int getLevel() const;
 
-	int getUnitHealth() const;
+	virtual int getHealth() const;
 
-	int getUnitMaxHealth() const;
+	virtual int getMaxHealth() const;
 
-	float getUnitHealthPercentage() const;
+	virtual bool isDead() const;
+	
+	virtual float getHealthPercent() const;
 
-	int getUnitEnergy() const;
+	virtual int getEnergy() const;
 
-	int getUnitMaxEnergy() const;
+	virtual int getMaxEnergy() const;
 
-	bool isInCombat() const;
+	virtual bool isInCombat() const;
 
-	bool isLootable() const;
+	virtual bool isLootable() const;
+	
+	virtual bool isTappedByOther() const;
+	
+	virtual bool isTappedByMe() const;
 
-	WowGuid128 getSummonedBy() const;
+	virtual WowGuid128 getSummonedBy() const;
 
-	WowGuid128 getTargetGuid() const;
+	virtual WowGuid128 getTargetGuid() const;
 
-	WowGuid128* getTargetGuidPtr() const;
+	virtual const WowGuid128* getTargetGuidPtr() const;
 
-	void moveTo(WowGame& game, const WowVector3f& destination);
+	virtual void moveTo(WowGame& game, const WowVector3f& destination);
 
-	bool evaluateAggroDistanceWith(const WowUnitObject& unit) const;
+	virtual bool evaluateAggroDistanceWith(const WowUnitObject& unit) const;
 
 };
 
@@ -50,10 +56,10 @@ inline std::ostream& operator<<(
 	)
 {
 	out << (WowObject)obj
-		<< ": [LVL" << obj.getLevel() << "]" << obj.getUnitClassLabel()
+		<< ": [LVL" << obj.getLevel() << "]" << obj.getClassLabel()
 		<< ": [SummonedBy Guid = " << obj.getSummonedBy().upper() << obj.getSummonedBy().lower()
-		<< " health=" << obj.getUnitHealth() << "/" << obj.getUnitMaxHealth()
-		<< " energy=" << obj.getUnitEnergy() << "/" << obj.getUnitMaxEnergy();
+		<< " health=" << obj.getHealth() << "/" << obj.getMaxHealth()
+		<< " energy=" << obj.getEnergy() << "/" << obj.getMaxEnergy();
 	return out;
 }
 

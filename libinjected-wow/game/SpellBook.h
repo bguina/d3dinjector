@@ -23,8 +23,8 @@ public:
 
 	void castSpell(const WowGame& game, const uint32_t spellId, const uint128_t* target);
 	uint64_t* petInfoFindSpellById(const WowGame& game, const uint32_t petSpellId);
-	void petInfoSendPetAction(const WowGame& game, uint64_t* spell, uint128_t* target, uint32_t unknown, uint64_t* unkwown2);
-	bool orderPetToAttackTarget(const WowGame& game, uint128_t* target);
+	void petInfoSendPetAction(const WowGame& game, uint64_t* spell, const WowGuid128* target, uint32_t unknown, uint64_t* unkwown2);
+	bool orderPetToAttackTarget(const WowGame& game, const WowGuid128* target);
 
 private:
 	const SpellbookDescriptor* getSpell(uint32_t spellId) const;

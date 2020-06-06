@@ -151,7 +151,7 @@ public:
 
 	std::shared_ptr<WowActivePlayerObject> getActivePlayer();
 
-	size_t get_objects_count() const;
+	size_t getObjectsCount() const;
 
 private:
 	const uint8_t** mPointerAddr;
@@ -160,7 +160,7 @@ private:
 
 inline std::ostream& operator<<(std::ostream& out, const ObjectManager& objMgr)
 {
-	out << "[ObjectManager@" << (void*)objMgr.getBaseAddress() << ":" << (objMgr.isEnabled() ? "ENABLED" : "DISABLED") << " with " << objMgr.get_objects_count() << " objects]" << std::endl;
+	out << "[ObjectManager@" << (void*)objMgr.getBaseAddress() << ":" << (objMgr.isEnabled() ? "ENABLED" : "DISABLED") << " with " << objMgr.getObjectsCount() << " objects]" << std::endl;
 
 
 	if (NULL != objMgr.getBaseAddress()) {

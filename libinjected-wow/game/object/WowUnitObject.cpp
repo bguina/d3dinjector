@@ -6,15 +6,14 @@
 WowUnitObject::WowUnitObject(const uint8_t* baseAddress) :
 	WowObject(baseAddress)
 {
-	
 }
 
-WowUnitClass WowUnitObject::getUnitClass() const {
+WowUnitClass WowUnitObject::getClass() const {
 	return *reinterpret_cast<const WowUnitClass*>(getDescriptor() + WowGameOffsets::WowUnitObject::DescriptorOffsetClass);
 }
 
-std::string WowUnitObject::getUnitClassLabel() const {
-	switch (getUnitClass()) {
+std::string WowUnitObject::getClassLabel() const {
+	switch (getClass()) {
 	case WowUnitClass::Warrior: return "Warrior";
 	case WowUnitClass::Paladin: return "Paladin";
 	case WowUnitClass::Hunter: return "Hunter";
@@ -29,7 +28,7 @@ std::string WowUnitObject::getUnitClassLabel() const {
 	}
 }
 
-WowUnitRace WowUnitObject::getUnitRace() const {
+WowUnitRace WowUnitObject::getRace() const {
 	return *reinterpret_cast<const WowUnitRace*>(getDescriptor() + WowGameOffsets::WowUnitObject::DescriptorOffsetRace);
 }
 
@@ -37,34 +36,48 @@ int WowUnitObject::getLevel() const {
 	return *(getDescriptor() + 0x134);
 }
 
-int WowUnitObject::getUnitHealth() const {
+int WowUnitObject::getHealth() const {
 	return *reinterpret_cast<const uint32_t*>(getDescriptor() + WowGameOffsets::WowUnitObject::DescriptorOffsetHealth);
 }
 
-int WowUnitObject::getUnitMaxHealth() const {
+int WowUnitObject::getMaxHealth() const {
 	return *reinterpret_cast<const uint32_t*>(getDescriptor() + WowGameOffsets::WowUnitObject::DescriptorOffsetMaxHealth);
 }
 
-float WowUnitObject::getUnitHealthPercentage() const {
+float WowUnitObject::getHealthPercent() const {
 	uint32_t currentHealth = *reinterpret_cast<const uint32_t*>(getDescriptor() + WowGameOffsets::WowUnitObject::DescriptorOffsetHealth);
 	uint32_t maxHealth = *reinterpret_cast<const uint32_t*>(getDescriptor() + WowGameOffsets::WowUnitObject::DescriptorOffsetMaxHealth);
 	return (currentHealth * 100.00f / maxHealth);
 }
 
-int WowUnitObject::getUnitEnergy() const {
+bool WowUnitObject::isDead() const {
+	return 1 > getHealth();
+}
+
+int WowUnitObject::getEnergy() const {
 	return *reinterpret_cast<const uint32_t*>(getDescriptor() + WowGameOffsets::WowUnitObject::DescriptorOffsetEnergy);
 }
 
-int WowUnitObject::getUnitMaxEnergy() const {
+int WowUnitObject::getMaxEnergy() const {
 	return *reinterpret_cast<const uint32_t*>((getDescriptor() + WowGameOffsets::WowUnitObject::DescriptorOffsetMaxEnergy));
 }
 
 bool WowUnitObject::isInCombat() const {
-	return *reinterpret_cast<const uint32_t*>((getDescriptor() + WowGameOffsets::WowUnitObject::DescriptorOffsetUnitDynamicflags)) & (uint32_t)WowUnitDynamicFlags::isInCombat;
+	return *reinterpret_cast<const uint32_t*>((getDescriptor() + WowGameOffsets::WowUnitObject::DescriptorOffsetUnitDynamicflags)) & uint32_t(WowUnitDynamicFlags::isInCombat);
 }
 
 bool WowUnitObject::isLootable() const {
-	return *reinterpret_cast<const uint32_t*>((getDescriptor() + WowGameOffsets::WowObject::DescriptorOffsetObjectDynamicflags)) & (uint32_t)WowObjectDynamicFlags::Lootable;
+	return *reinterpret_cast<const uint32_t*>((getDescriptor() + WowGameOffsets::WowObject::DescriptorOffsetObjectDynamicflags)) & uint32_t(WowObjectDynamicFlags::Lootable);
+}
+
+bool WowUnitObject::isTappedByOther() const
+{
+	return *reinterpret_cast<const uint32_t*>((getDescriptor() + WowGameOffsets::WowObject::DescriptorOffsetObjectDynamicflags)) & uint32_t(WowObjectDynamicFlags::Tapped);
+}
+
+bool WowUnitObject::isTappedByMe() const
+{
+	return *reinterpret_cast<const uint32_t*>((getDescriptor() + WowGameOffsets::WowObject::DescriptorOffsetObjectDynamicflags)) & (uint32_t(WowObjectDynamicFlags::Lootable) | uint32_t(WowObjectDynamicFlags::TappedByMe));
 }
 
 WowGuid128  WowUnitObject::getSummonedBy() const {
@@ -75,7 +88,7 @@ WowGuid128 WowUnitObject::getTargetGuid() const {
 	return ((WowGuid128*)(getDescriptor() + WowGameOffsets::WowUnitObject::DescriptorOffsetTargetGuid))[0];
 }
 
-WowGuid128* WowUnitObject::getTargetGuidPtr() const {
+const WowGuid128* WowUnitObject::getTargetGuidPtr() const {
 	return ((WowGuid128*)(getDescriptor() + WowGameOffsets::WowUnitObject::DescriptorOffsetTargetGuid));
 }
 

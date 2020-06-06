@@ -13,11 +13,15 @@ struct WowGameOffsets {
 		static const uint64_t OffsetSpellBookBase = 0x25AED38;
 
 		static const uint64_t FunctionFrameScript_ExecuteBuffer = 0x31F360;
-		static const uint64_t FunctionInteractByGuid = 0xD72750;
+		
+		static const uint64_t FunctionUnit_Interact = 0xD72750;
+		static const uint64_t FunctionUnit_CanAttack = 0x889740;
+		static const uint64_t FunctionUnit_IsFriendly = 0x8A7490;
+		
 		static const uint64_t FunctionPetInfo_FindSpellById = 0xF03B20;
 		static const uint64_t FunctionPetInfo_SendPetAction = 0xF14330;
-		static const uint64_t FunctionCastSpell = 0xDC95C0;
-		static const uint64_t FunctionClickSpell = 0x76DC00;
+		static const uint64_t FunctionSpellBook_CastSpell = 0xDC95C0;
+		static const uint64_t FunctionSpell_ClickSpell = 0x76DC00;
 		static const uint64_t FunctionWorldFrame_Intersect = 0x1158A00;
 	};
 
@@ -52,7 +56,5 @@ struct WowGameOffsets {
 		static const uint64_t DescriptorOffsetSummonedBy = 0x5C;
 		static const uint64_t DescriptorOffsetUnitDynamicflags = 0x174;
 
-		static const uint64_t FunctionUnitCanAttack = 0x889740;
-		static const uint64_t FunctionUnitIsFriendlyWith = 0x8A7490;
 	};
 };

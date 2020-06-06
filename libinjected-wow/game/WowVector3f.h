@@ -2,7 +2,7 @@
 
 #include <fstream>
 
-constexpr  float PI = 3.141592653589793f;
+constexpr float PI = 3.141592653589793f;
 
 class WowVector3f {
 public:
@@ -12,7 +12,7 @@ public:
 			float y;
 			float z;
 		} position;
-		float matrix[3] = { .0f,.0f,.0f };
+		float matrix[3];
 	};
 
 	float operator[](int index) const;
@@ -21,7 +21,7 @@ public:
 	WowVector3f translatedByY(float d) const;
 	WowVector3f translatedByZ(float d) const;
 
-	WowVector3f& translate_by_x(float d);
+	WowVector3f& translateByX(float d);
 	WowVector3f& translateByY(float d);
 	WowVector3f& translateByZ(float d);
 
@@ -33,11 +33,10 @@ public:
 	WowVector3f getPositionAtDegreesByDistance(int angle, float d) const;
 };
 
-inline std::ostream& operator<<(
-	std::ostream& out,
-	const WowVector3f& obj
-	)
+inline std::ostream& operator<<(std::ostream& out,const WowVector3f& obj)
 {
 	out << "[Vector3f:" << obj.position.x << "/" << obj.position.y << "/" << obj.position.z << "]";
 	return out;
 }
+
+constexpr WowVector3f WOWVECTOR3F_ORIGIN({ {{.0,.0,.0}} });

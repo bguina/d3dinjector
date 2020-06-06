@@ -35,15 +35,11 @@ Thanks to Fran�ois Dessenne for convincing me
 to do a general rewrite of this class.
 */
 
-
 #include <cstdint>
-#include <ostream>
-#include <stdexcept>
 #include <string>
 #include <type_traits>
 #include <utility>
 #include <vector>
-
 
 class uint128_t {
 private:
@@ -53,16 +49,16 @@ public:
     // Constructors
     uint128_t();
     uint128_t(const uint128_t& rhs);
-    uint128_t(uint128_t&& rhs);
-    uint128_t(std::string& s);
-    uint128_t(const char* s);
+    uint128_t(uint128_t&& rhs) noexcept;
+    explicit uint128_t(std::string& s);
+    explicit uint128_t(const char* s);
 
     template <typename T, typename = typename std::enable_if<std::is_integral<T>::value, T>::type >
     uint128_t(const T& rhs)
         : UPPER(0), LOWER(rhs)
     {
         if (std::is_signed<T>::value) {
-            if (rhs < 0) {
+            if ((int64_t)rhs < 0) {
                 UPPER = -1;
             }
         }

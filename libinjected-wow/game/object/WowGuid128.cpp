@@ -1,4 +1,6 @@
-﻿#include "WowGuid128.h"
+﻿#include <iostream>
+
+#include "WowGuid128.h"
 
 const uint128_t uint128_0(0);
 const uint128_t uint128_1(1);
@@ -11,8 +13,8 @@ uint128_t::uint128_t(const uint128_t& rhs)
     : UPPER(rhs.UPPER), LOWER(rhs.LOWER)
 {}
 
-uint128_t::uint128_t(uint128_t&& rhs)
-    : UPPER(std::move(rhs.UPPER)), LOWER(std::move(rhs.LOWER))
+uint128_t::uint128_t(uint128_t&& rhs) noexcept
+	: UPPER(std::move(rhs.UPPER)), LOWER(std::move(rhs.LOWER))
 {
     if (this != &rhs) {
         rhs.UPPER = 0;
@@ -445,8 +447,7 @@ std::string uint128_t::str(uint8_t base, const unsigned int& len) const {
 }
 
 uint128_t operator<<(const bool& lhs, const uint128_t& rhs) {
-    //return uint128_t(lhs) << rhs;
-    return lhs || 0 != rhs ? 1 : 0; // fix for "warning C4804: '<': unsafe use of type 'bool' in operation"
+    return uint128_t(lhs) << rhs;
 }
 
 uint128_t operator<<(const uint8_t& lhs, const uint128_t& rhs) {

@@ -128,6 +128,6 @@ std::shared_ptr<WowActivePlayerObject> ObjectManager::getActivePlayer() {
 	return anyOfType<WowActivePlayerObject>(WowObjectType::ActivePlayer);
 }
 
-size_t ObjectManager::get_objects_count() const {
+size_t ObjectManager::getObjectsCount() const {
 	return mObjects.size();
 }

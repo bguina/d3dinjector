@@ -4,12 +4,12 @@
 
 class MemoryObject {
 public:
-	MemoryObject(const uint8_t* baseAddr);
+	MemoryObject(const uint8_t* baseAddress);
 	virtual ~MemoryObject();
 
 	const uint8_t* getAddress() const;
 
-	void rebase(const uint8_t* baseAddr);
+	void rebase(const uint8_t* baseAddress);
 
 	bool isPresent() const;
 
@@ -29,5 +29,5 @@ public:
 	}
 
 private:
-	const uint8_t* mBaseAddr;
+	const uint8_t* mBaseAddress;
 };

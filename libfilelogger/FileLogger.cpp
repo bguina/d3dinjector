@@ -23,11 +23,11 @@
 #define BOLDWHITE   "\033[1m\033[37m"      /* Bold White */
 
 const std::string FileLogger::normal = std::string(RESET);
-const std::string FileLogger::debug = std::string(CYAN) + "[d]";
-const std::string FileLogger::verbose = std::string(WHITE) + "[v]";
-const std::string FileLogger::info = std::string(GREEN) + "[i]";
-const std::string FileLogger::warn = std::string(YELLOW) + "[w]";
-const std::string FileLogger::err = std::string(BOLDRED) + "[e]";
+const std::string FileLogger::debug = std::string(CYAN) + "[d] ";
+const std::string FileLogger::verbose = std::string(WHITE) + "[v] ";
+const std::string FileLogger::info = std::string(GREEN) + "[i] ";
+const std::string FileLogger::warn = std::string(YELLOW) + "[w] ";
+const std::string FileLogger::err = std::string(BOLDRED) + "[e] ";
 
 FileLogger::FileLogger(const std::string& tag) :
 	FileLogger(tag, std::string())
@@ -74,7 +74,7 @@ void FileLogger::clear() {
 }
 
 void FileLogger::log(const std::string& msg) {
-	*this << msg << std::endl;
+	*this << mPrefix << msg << std::endl;
 }
 
 void FileLogger::i(const std::string& msg) {

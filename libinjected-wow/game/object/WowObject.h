@@ -21,12 +21,11 @@ public:
 		return static_cast<T&>(*this);
 	}
 
-
 	bool vanished() const;
 
-	WowGuid128 getGuid() const;
+	virtual WowGuid128 getGuid() const;
 
-	WowGuid128* getGuidPtr() const;
+	virtual const WowGuid128* getGuidPtr() const;
 
 	//		StorageField = 0x10,//good-33526
 	//		ObjectType = 0x20,//good-33526
@@ -34,26 +33,29 @@ public:
 	//		FirstObject = 0x18,//good-33526
 	//		LocalGUID = 0x58, //good-33526
 
-	WowObjectType getType() const;
+	virtual WowObjectType getType() const;
 
-	std::string getTypeLabel() const;
+	virtual std::string getTypeLabel() const;
 
-	const WowVector3f& getPosition() const;
+	virtual const WowVector3f& getPosition() const;
 
-	float getX() const;
-	float getY() const;
-	float getZ() const;
+	virtual float getX() const;
+	virtual float getY() const;
+	virtual float getZ() const;
 
-	float getFacingRadians() const;
+	virtual float getFacingRadians() const;
 
-	int getFacingDegrees() const;
+	virtual int getFacingDegrees() const;
 
 	// Position helpers
-	float getDistanceTo(const WowObject& object) const;
-	float getFlightDistanceTo(const WowObject& object) const;
+	virtual float getDistanceTo(const WowObject& object) const;
+	virtual float getFlightDistanceTo(const WowObject& object) const;
 
-	int getFacingDegreesTo(const WowObject& object) const;
-	int getFacingDeltaDegrees(const WowObject& object) const;
+	virtual int getFacingDegreesTo(const WowObject& object) const;
+	virtual int getFacingDeltaDegrees(const WowObject& object) const;
+
+	bool operator==(const WowObject& other) const { return other.getGuid() == getGuid(); }
+	bool operator!=(const WowObject& other) const { return !(other == *this); }
 
 protected:
 	const uint8_t* getDescriptor() const;
