@@ -6,8 +6,15 @@ APathFinder::APathFinder() :
 {
 }
 
-APathFinder::~APathFinder() {
+APathFinder::~APathFinder() = default;
+
+bool APathFinder::isLost(const Vector3f& currentPosition) const
+{
+	Vector3f dummy;
+
+	return !getNearestKnownPosition(currentPosition, dummy);
 }
+
 
 bool APathFinder::getDestination(Vector3f& result) const {
 	if (mDestination != nullptr) {
@@ -26,6 +33,7 @@ void APathFinder::clearDestination() {
 	mDestination = nullptr;
 }
 
-bool APathFinder::getGuaranteedDestination(Vector3f& result) const {
-	return mDestination != nullptr && findPath(*mDestination, result);
+bool APathFinder::getGuaranteedDestination(Vector3f& result) const
+{
+	return mDestination != nullptr && getNearestKnownPosition(*mDestination, result);
 }

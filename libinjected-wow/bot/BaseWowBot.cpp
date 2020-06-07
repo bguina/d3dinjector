@@ -1,5 +1,3 @@
-#include <vector>
-
 #include "BaseWowBot.h"
 
 #include "../game/WowGame.h"
@@ -12,19 +10,21 @@ BaseWowBot::BaseWowBot(const std::string& tag) :
 {
 }
 
-BaseWowBot::~BaseWowBot() {
-}
+BaseWowBot::~BaseWowBot() = default;
 
-bool BaseWowBot::attach(std::shared_ptr<WowGame> game) {
+bool BaseWowBot::attach(const std::shared_ptr<WowGame> game)
+{
 	mGame = game;
 	return true;
 }
 
-const std::string& BaseWowBot::getTag() const {
+const std::string& BaseWowBot::getTag() const
+{
 	return mDbg.getTag();
 }
 
-void BaseWowBot::_logDebug() const {
+void BaseWowBot::_logDebug() const
+{
 	std::shared_ptr<const WowActivePlayerObject> self = mGame->getObjectManager().getActivePlayer();
 	mDbg << FileLogger::info;
 
@@ -34,9 +34,10 @@ void BaseWowBot::_logDebug() const {
 		mDbg << "Self in combat: " << self->isInCombat() << std::endl;
 		const auto targetGuid = self->getTargetGuid();
 
-		if (0 != targetGuid) {
-
-			std::shared_ptr<const WowUnitObject> target = mGame->getObjectManager().getObjectByGuid<WowUnitObject>(targetGuid);
+		if (0 != targetGuid)
+		{
+			const std::shared_ptr<const WowUnitObject> target = mGame->getObjectManager().getObjectByGuid<WowUnitObject>(targetGuid);
+			
 			if (nullptr != target) {
 				mDbg << "Target: " << targetGuid.upper() << targetGuid.lower() << " can be attacked? " << self->canAttack(*mGame, *target) << std::endl;
 			}
@@ -46,13 +47,13 @@ void BaseWowBot::_logDebug() const {
 		}
 
 		// show info relative to a random unit around, if any
-		std::shared_ptr<const WowUnitObject> any = mGame->getObjectManager().anyOfType<WowUnitObject>(WowObjectType::Unit);
+		const std::shared_ptr<const WowUnitObject> any = mGame->getObjectManager().anyOfType<WowUnitObject>(WowObjectType::Unit);
+		
 		if (nullptr != any) {
-			mDbg << "anyunit position is " << any->getPosition()
+			mDbg << "any-unit position is " << any->getPosition()
 				<< " facing it requires angle of " << self->getFacingDegreesTo(*any)
 				<< " angle delta is " << self->getFacingDeltaDegrees(*any) << std::endl;
 		}
 	}
 	mDbg << FileLogger::normal;
 }
-

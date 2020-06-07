@@ -1,30 +1,30 @@
 #pragma once
 
-#include <cmath>
-#include <iostream>
 #include <vector>
 #include <list>
-#include <sstream>
 
 #include "APathFinder.h"
 
-class LinearPathFinder final : public APathFinder 
+class LinearPathFinder final : public APathFinder
 {
 public:
+	LinearPathFinder();
 	LinearPathFinder(const std::vector<Vector3f>& waypoints);
-	~LinearPathFinder();
+	virtual ~LinearPathFinder();
+
+	void updatePath(const std::vector<Vector3f>& waypoints);
 
 	// APathFinder interface
 
-	virtual bool setDestination(const Vector3f& destination) override;
+	bool setDestination(const Vector3f& destination) override;
 
-	virtual void clearDestination() override;
+	void clearDestination() override;
 
-	virtual bool findPath(const Vector3f& currentPosition, Vector3f& result) const override;
+	bool getNearestKnownPosition(const Vector3f& currentPosition, Vector3f& result) const override;
 
-	virtual bool moveAlong(const Vector3f& currentPosition, Vector3f& result) override;
+	bool getNextPosition(const Vector3f& currentPosition, Vector3f& result) override;
 
-	virtual bool followPathToDestination(const Vector3f& currentPosition, Vector3f& result) override;
+	bool getNextPositionToDestination(const Vector3f& currentPosition, Vector3f& result) override;
 
 	// Final class methods
 

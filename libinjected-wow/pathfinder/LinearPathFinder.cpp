@@ -1,6 +1,5 @@
 #include "pch.h"
 
-#include <cmath>
 #include <iostream>
 #include <vector>
 #include <list>
@@ -9,16 +8,23 @@
 #include "LinearPathFinder.h"
 #include "Vector3f.h"
 
-std::list<Vector3f>::const_iterator helperGetNearestWaypoint(const std::list<Vector3f> mPath, const Vector3f& currentPosition);
+std::list<Vector3f>::const_iterator helperGetNearestWaypoint(const std::list<Vector3f>& path, const Vector3f& currentPosition);
 
-LinearPathFinder::LinearPathFinder(const std::vector<Vector3f>& waypoints) :
-	mPath(waypoints.begin(), waypoints.end()),
-	mDestinationWaypoint(mPath.end()),
-	mNextWaypoint(mPath.begin())
+LinearPathFinder::LinearPathFinder() = default;
+
+LinearPathFinder::LinearPathFinder(const std::vector<Vector3f>& waypoints)
 {
+	updatePath(waypoints);
 }
 
-LinearPathFinder::~LinearPathFinder() {
+LinearPathFinder::~LinearPathFinder() = default;
+
+void LinearPathFinder::updatePath(const std::vector<Vector3f>& waypoints)
+{
+	mPath.clear();
+	std::copy(waypoints.begin(), waypoints.end(), std::back_inserter(mPath));
+	mDestinationWaypoint = mPath.end();
+	mNextWaypoint = mPath.begin();
 }
 
 bool LinearPathFinder::setDestination(const Vector3f& destination) {
@@ -36,10 +42,11 @@ void LinearPathFinder::reversePath() {
 	mPath.reverse();
 }
 
-bool LinearPathFinder::findPath(const Vector3f& currentPosition, Vector3f& result) const {
-	std::list<Vector3f>::const_iterator nearestWaypoint(helperGetNearestWaypoint(mPath, currentPosition));
+bool LinearPathFinder::getNearestKnownPosition(const Vector3f& currentPosition, Vector3f & result) const {
+	const auto nearestWaypoint(helperGetNearestWaypoint(mPath, currentPosition));
 
-	if (nearestWaypoint != mPath.end()) {
+	if (nearestWaypoint != mPath.end())
+	{
 		result = *nearestWaypoint;
 		return true;
 	}
@@ -47,26 +54,30 @@ bool LinearPathFinder::findPath(const Vector3f& currentPosition, Vector3f& resul
 	return false;
 }
 
-bool LinearPathFinder::moveAlong(const Vector3f& currentPosition, Vector3f& result) {
-	return followPathToDestination(currentPosition, result);
+bool LinearPathFinder::getNextPosition(const Vector3f & currentPosition, Vector3f & result)
+{
+	return getNextPositionToDestination(currentPosition, result);
 }
 
-bool LinearPathFinder::followPathToDestination(const Vector3f& currentPosition, Vector3f& result) {
+bool LinearPathFinder::getNextPositionToDestination(const Vector3f& currentPosition, Vector3f& result)
+{
 	std::stringstream ss;
+	
+	if (mPath.empty()) return false;
 
-	if (mNextWaypoint == mPath.end()) {
+	if (mNextWaypoint == mPath.end())
+	{
 		mNextWaypoint = helperGetNearestWaypoint(mPath, currentPosition);
-	}
-	else if (currentPosition.getDistanceTo(*mNextWaypoint) < 10)
+	} else if (currentPosition.getDistanceTo(*mNextWaypoint) < 10)
 	{
 		// we have reached the target position, proceed to next waypoint
 		// fixme: we should proceed to the path leading to the mDestinationWaypoint!
-		mNextWaypoint++;
+		++mNextWaypoint;
 
 		// fixme: this should never happen since we are supposed to lead to the mDestinationWaypoint (unless destination is not set?)
 		if (mNextWaypoint == mPath.end())
 		{
-			bool endIsNearStart = currentPosition.getDistanceTo(*mPath.begin()) < 3;
+			const auto endIsNearStart = currentPosition.getDistanceTo(*mPath.begin()) < 3;
 
 			if (!endIsNearStart)
 			{
@@ -83,21 +94,28 @@ bool LinearPathFinder::followPathToDestination(const Vector3f& currentPosition, 
 		// target waypoint remains unchanged
 	}
 
+	if (mPath.end() == mNextWaypoint)
+	{
+		return false;
+	}
+
 	result = *mNextWaypoint;
 	return true;
 }
 
-size_t LinearPathFinder::getWaypointsCount() const {
+size_t LinearPathFinder::getWaypointsCount() const
+{
 	return mPath.size();
 }
 
-std::list<Vector3f>::const_iterator helperGetNearestWaypoint(const std::list<Vector3f> mPath, const Vector3f& currentPosition) {
-	std::list<Vector3f>::const_iterator nearestWaypoint(mPath.end());
+std::list<Vector3f>::const_iterator helperGetNearestWaypoint(const std::list<Vector3f>& path, const Vector3f& currentPosition)
+{
+	auto nearestWaypoint(path.end());
 	float nearestDistance = FLT_MAX;
 
-	for (std::list<Vector3f>::const_iterator it = mPath.begin(); it != mPath.end(); it++)
+	for (auto it = path.begin(); it != path.end(); ++it)
 	{
-		float waypointDistance = currentPosition.getDistanceTo(*it);
+		const float waypointDistance = currentPosition.getDistanceTo(*it);
 
 		if (waypointDistance < nearestDistance)
 		{

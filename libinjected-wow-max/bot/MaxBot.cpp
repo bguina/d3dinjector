@@ -141,7 +141,7 @@ bool WowMaxBot::onEvaluate() {
 						Vector3f nextPosition;
 
 						if (targetUnit != nullptr) {
-							if (mPathFinder->moveAlong(selfPosition, nextPosition) && targetUnit->getPosition().getDistanceTo(nextPosition) < 50)
+							if (mPathFinder->getNextPosition(selfPosition, nextPosition) && targetUnit->getPosition().getDistanceTo(nextPosition) < 50)
 							{
 								mTargetUnit = targetUnit;
 							}
@@ -273,7 +273,7 @@ bool WowMaxBot::onEvaluate() {
 					//mDbg.flush();
 					Vector3f nextPosition;
 
-					if (mPathFinder->moveAlong(selfPosition, nextPosition)) {
+					if (mPathFinder->getNextPosition(selfPosition, nextPosition)) {
 						mDbg.i("mPathFinder moving along the path");
 						//mDbg.flush();
 						self->moveTo(*mGame, nextPosition);

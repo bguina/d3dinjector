@@ -10,14 +10,16 @@ public:
 	APathFinder();
 	virtual ~APathFinder();
 
-	virtual bool getGuaranteedDestination(Vector3f& result) const;
+	bool getDestination(Vector3f& result) const override;
 
-	virtual bool getDestination(Vector3f& result) const;
+	bool setDestination(const Vector3f& destination) override;
 
-	virtual bool setDestination(const Vector3f& destination);
+	void clearDestination() override;
+	
+	bool getGuaranteedDestination(Vector3f& result) const override;
 
-	virtual void clearDestination();
-
+	bool isLost(const Vector3f& currentPosition) const override;
+	
 protected:
 	std::unique_ptr<const Vector3f> mDestination;
 };
