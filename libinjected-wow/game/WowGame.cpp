@@ -15,8 +15,11 @@ WowGame::WowGame(long pid, const uint8_t* baseAddress) :
 {
 }
 
-WowGame::~WowGame() {
+WowGame::~WowGame() = default;
 
+long long WowGame::getTime() const
+{
+	return GetTickCount64();
 }
 
 bool WowGame::isLoggedIn() const {
@@ -51,11 +54,6 @@ const IWindowController* WowGame::getWindowController() const {
 
 IWindowController* WowGame::getWindowController() {
 	return mWindowController.get();
-}
-
-long long WowGame::getTime() const
-{
-	return GetTickCount64();
 }
 
 const uint32_t* WowGame::getCamera() const {

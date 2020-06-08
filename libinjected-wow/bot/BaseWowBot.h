@@ -12,9 +12,9 @@ public:
 	BaseWowBot(const std::string& tag);
 	virtual ~BaseWowBot();
 
-	virtual bool attach(std::shared_ptr<WowGame> game) override;
+	bool attach(std::shared_ptr<WowGame> game) override;
 
-	virtual const std::string& getTag() const override;
+	const std::string& getTag() const override;
 
 protected:
 	virtual void _logDebug() const;

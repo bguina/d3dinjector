@@ -7,47 +7,45 @@
 #include "SpellBook.h"
 
 #include "AGame.h"
+#include "IWowGame.h"
 
 typedef uint64_t WowGameTime;
 
 class IWindowController;
 
-class WowGame : public AGame
+class WowGame : public AGame, public IWowGame
 {
 public:
 	WowGame(long pid, const uint8_t* baseAddress);
 	~WowGame();
 	
+	long long getTime() const override;
+
 	const IWindowController* getWindowController() const override;
 	IWindowController* getWindowController() override;
 
-	long long getTime() const;
-	void update();
+	void update() override;
 
-	bool isLoggedIn() const;
-	bool isLoading() const;
-	bool isInGameOrLoading() const;
+	bool isLoggedIn() const override;
+	bool isLoading() const override;
+	bool isInGameOrLoading() const override;
 	
-	const uint32_t* getCamera() const;
+	const uint32_t* getCamera() const override;
 
-	const ObjectManager& getObjectManager() const;
+	const ObjectManager& getObjectManager() const override;
+	ObjectManager& getObjectManager() override;
 
-	ObjectManager& getObjectManager();
+	const SpellBook& getSpellBook() const override;
+	SpellBook& getSpellBook() override;
 
-	const SpellBook& getSpellBook() const;
+	const char* getVersionBuild() const override;
+	const char* getReleaseDate() const override;
+	const char* getVersion() const override;
 
-	SpellBook& getSpellBook();
+	int getInGameFlags() const override;
 
-	const char* getVersionBuild() const;
-
-	const char* getReleaseDate() const;
-
-	const char* getVersion() const;
-
-	int getInGameFlags() const;
-
-
-	bool traceLine(const WowVector3f& from, const WowVector3f& to, uint64_t flags) const;
+	bool traceLine(const WowVector3f& from, const WowVector3f& to, uint64_t flags) const override;
+	
 	bool addObserver(const std::string& name, const std::shared_ptr<ARecurrentServerObserver<WowGame>>& observer);
 	bool removeObserver(const std::string& name);
 
