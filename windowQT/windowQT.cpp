@@ -3,6 +3,8 @@
 
 #include "windowQT.h"
 
+
+
 windowQT::windowQT(QWidget* parent) : QMainWindow(parent)
 {
 	ui.setupUi(this);
@@ -23,11 +25,16 @@ windowQT::windowQT(QWidget* parent) : QMainWindow(parent)
 		ui.containerInjector->setVisible(false);
 		ui.containerDeinject->setVisible(false);
 		mClient.sendMessage(messageManager.builRequestdAvailableConfigationMessage());
+
+		move(30, 300);
 	}
 	else {
 		std::cout << "Failed to connect !" << std::endl;
 		//SHOW ERROR NO SERVER...
+		move(10, 500);
 	}
+
+	
 	tickNext();
 
 	return;
@@ -101,6 +108,8 @@ void windowQT::closeEvent(QCloseEvent* event)
 {
 	//OVERIDE the close (using the top right corner)
 	mClient.disconnect();
+
+	
 }
 
 #include "recordwaypointswindow.h"

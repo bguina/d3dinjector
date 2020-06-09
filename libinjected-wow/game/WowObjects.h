@@ -5,6 +5,5 @@
 #include "object/WowContainerObject.h"
 #include "object/WowCorpseObject.h"
 #include "object/WowItemObject.h"
-#include "object/WowLootObject.h"
 #include "object/WowPlayerObject.h"
 #include "object/WowUnitObject.h"

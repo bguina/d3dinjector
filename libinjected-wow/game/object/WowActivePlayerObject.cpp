@@ -3,6 +3,7 @@
 #include "../WowGame.h"
 
 #include "../dump/WowGameOffsets.h"
+#include "descriptor/WowActivePlayerDescriptor.h"
 
 WowActivePlayerObject::WowActivePlayerObject(const uint8_t* baseAddress) :
 	WowPlayerObject(baseAddress)
@@ -19,7 +20,17 @@ bool WowActivePlayerObject::isFriendly(const WowGame& game, const WowUnitObject&
 	return game.getFunction<ActivePlayerIsFriendlyWith>(WowGameOffsets::WowGame::FunctionUnit_IsFriendly)(getAddress(), target.getAddress());
 }
 
-uint64_t  WowActivePlayerObject::interactWith(const WowGame& game, const WowGuid128* targetGuid) {
+uint64_t WowActivePlayerObject::interactWith(const WowGame& game, const WowGuid128* targetGuid) {
 	typedef uint64_t(__fastcall ActivePlayerInteract)(const WowGuid128* pTargetGuid);
 	return game.getFunction<ActivePlayerInteract>(WowGameOffsets::WowGame::FunctionUnit_Interact)(targetGuid);
+}
+
+const WowActivePlayerDescriptor& WowActivePlayerObject::getActivePlayerData() const
+{
+	return get<WowActivePlayerDescriptor>();
+}
+
+const CGActivePlayerDynamicDescriptor& WowActivePlayerObject::getActivePlayerDynamicData() const
+{
+	return getDynamicData<CGActivePlayerDynamicDescriptor>();
 }

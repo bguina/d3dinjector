@@ -38,8 +38,6 @@ public:
 		static_assert(std::is_base_of<WowObject, T>::value, "T must inherit from WowObject");
 
 		for (auto it = begin(); it != end(); ++it) {
-			if (nullptr == it->second) return nullptr;
-
 			if (guid == it->second->getGuid()) {
 				return std::static_pointer_cast<T>(it->second);
 			}
@@ -60,8 +58,6 @@ public:
 		static_assert(std::is_base_of<WowObject, T>::value, "T must inherit from WowObject");
 
 		for (auto it = begin(); it != end(); ++it) {
-			if (nullptr == it->second) return nullptr;
-
 			if (WowObjectType::Unit == it->second->getType() && guid == std::static_pointer_cast<WowUnitObject>(it->second)->getSummonedBy()) {
 				return std::static_pointer_cast<T>(it->second);
 			}
@@ -75,7 +71,8 @@ public:
 	{
 		static_assert(std::is_base_of<WowObject, T>::value, "T must inherit from WowObject");
 
-		for (auto it = begin(); it != end(); ++it) {
+		for (auto it = begin(); it != end(); ++it)
+		{
 			if (type == it->second->getType())
 				return std::static_pointer_cast<T>(it->second);
 		}
@@ -95,7 +92,8 @@ public:
 		static_assert(std::is_base_of<WowObject, T>::value, "T must inherit from WowObject");
 		std::list<std::shared_ptr<const T>> results;
 
-		for (auto it = begin(); it != end(); ++it) {
+		for (auto it = begin(); it != end(); ++it)
+		{
 			if (type == it->second->getType())
 				results.push_back(std::static_pointer_cast<T>(it->second));
 		}
@@ -109,7 +107,8 @@ public:
 		static_assert(std::is_base_of<WowObject, T>::value, "T must inherit from WowObject");
 		std::list<std::shared_ptr<T>> results;
 
-		for (auto it = begin(); it != end(); ++it) {
+		for (auto it = begin(); it != end(); ++it)
+		{
 			if (type == it->second->getType())
 				results.push_back(std::static_pointer_cast<T>(it->second));
 		}
@@ -123,7 +122,8 @@ public:
 		static_assert(std::is_base_of<WowObject, T>::value, "T must inherit from WowObject");
 		std::list<std::shared_ptr<const T>> results;
 
-		for (auto it = begin(); it != end(); ++it) {
+		for (auto it = begin(); it != end(); ++it)
+		{
 			auto obj = std::dynamic_pointer_cast<T>(it->second);
 			if (nullptr != obj)
 				results.push_back(std::static_pointer_cast<T>(it->second));
@@ -178,9 +178,9 @@ inline std::ostream& operator<<(std::ostream& out, const ObjectManager& objMgr)
 			case WowObjectType::Object: out << *obj; break;
 			case WowObjectType::Item: out << *obj; break;
 			case WowObjectType::Container: out << *obj; break;
-			case WowObjectType::Unit: out << obj->downcast<WowUnitObject>(); break;
-			case WowObjectType::Player:  out << obj->downcast<WowPlayerObject>(); break;
-			case WowObjectType::ActivePlayer:   out << obj->downcast<WowActivePlayerObject>(); break;
+			case WowObjectType::Unit: out << dynamic_cast<WowUnitObject&>(*obj); break;
+			case WowObjectType::Player:  out << dynamic_cast<WowUnitObject&>(*obj); break;
+			case WowObjectType::ActivePlayer:   out << dynamic_cast<WowActivePlayerObject&>(*obj); break;
 			case WowObjectType::GameObject:  out << *obj; break;
 			case WowObjectType::DynamicObject:   out << *obj; break;
 			case WowObjectType::Corpse: out << *obj; break;

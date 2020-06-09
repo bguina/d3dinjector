@@ -157,6 +157,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="game\IWowGame.h" />
+    <ClInclude Include="game\object\WowGameObjectObject.h" />
+    <ClInclude Include="game\object\descriptor\WowObjectDescriptor.h" />
+    <ClInclude Include="game\object\descriptor\WowUnitDescriptor.h" />
+    <ClInclude Include="game\object\descriptor\WowPlayerDescriptor.h" />
+    <ClInclude Include="game\object\descriptor\WowActivePlayerDescriptor.h" />
+    <ClInclude Include="game\object\descriptor\WowItemDescriptor.h" />
+    <ClInclude Include="game\object\descriptor\WowContainerDescriptor.h" />
+    <ClInclude Include="game\object\descriptor\WowDynamicObjectDescriptor.h" />
+    <ClInclude Include="game\object\descriptor\WowCorpseDescriptor.h" />
+    <ClInclude Include="game\object\descriptor\WowConversationDescriptor.h" />
+    <ClInclude Include="game\object\descriptor\WowGameObjectDescriptor.h" />
+    <ClInclude Include="game\object\descriptor\WowAreaTriggerDescriptor.h" />
     <ClInclude Include="game\WowObjects.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="game\dump\WowGameDescriptors.h" />
@@ -169,7 +181,6 @@
     <ClInclude Include="game\object\WowCorpseObject.h" />
     <ClInclude Include="game\object\WowGuid128.h" />
     <ClInclude Include="game\object\WowItemObject.h" />
-    <ClInclude Include="game\object\WowLootObject.h" />
     <ClInclude Include="game\object\WowObject.h" />
     <ClInclude Include="game\object\WowPlayerObject.h" />
     <ClInclude Include="game\object\WowUnimplementedObject.h" />
@@ -180,6 +191,7 @@
     <ClInclude Include="game\WowGame.h" />
     <ClInclude Include="game\WowVector3f.h" />
     <ClInclude Include="bot\IWowBot.h" />
+    <ClInclude Include="game\NameCache.h" />
     <ClInclude Include="NetworkParsing.h" />
     <ClInclude Include="observer\ActivePlayerPositionObserver.h" />
     <ClInclude Include="observer\AWowGameObserver.h" />
@@ -195,12 +207,12 @@
   <ItemGroup>
     <ClCompile Include="game\Lua.cpp" />
     <ClCompile Include="game\ObjectManager.cpp" />
+    <ClCompile Include="game\object\WowGameObjectObject.cpp" />
     <ClCompile Include="game\object\WowActivePlayerObject.cpp" />
     <ClCompile Include="game\object\WowContainerObject.cpp" />
     <ClCompile Include="game\object\WowCorpseObject.cpp" />
     <ClCompile Include="game\object\WowGuid128.cpp" />
     <ClCompile Include="game\object\WowItemObject.cpp" />
-    <ClCompile Include="game\object\WowLootObject.cpp" />
     <ClCompile Include="game\object\WowObject.cpp" />
     <ClCompile Include="game\object\WowPlayerObject.cpp" />
     <ClCompile Include="game\object\WowUnimplementedObject.cpp" />
@@ -208,6 +220,7 @@
     <ClCompile Include="game\SpellBook.cpp" />
     <ClCompile Include="game\WowGame.cpp" />
     <ClCompile Include="game\WowVector3f.cpp" />
+    <ClCompile Include="game\NameCache.cpp" />
     <ClCompile Include="NetworkParsing.cpp" />
     <ClCompile Include="observer\ActivePlayerPositionObserver.cpp" />
     <ClCompile Include="observer\AWowGameObserver.cpp" />

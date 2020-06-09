@@ -2,7 +2,6 @@
 
 #include "Client.h"
 #include "MessageManager.h"
-#include <QtWidgets/QMainWindow>
 #include "ui_windowQT.h"
 #include "recordWaypointsWindow.h"
 

@@ -11,6 +11,7 @@ struct WowGameOffsets {
 		static const uint64_t OffsetIsLoadingOrConnecting = 0x2279D30;
 		
 		static const uint64_t OffsetSpellBookBase = 0x25AED38;
+		static const uint64_t OffsetNameCacheBase = 0x1FB4B18;
 
 		static const uint64_t FunctionFrameScript_ExecuteBuffer = 0x31F360;
 		
@@ -45,15 +46,17 @@ struct WowGameOffsets {
 	};
 
 	struct WowUnitObject {
-		static const uint64_t DescriptorOffsetClass = 0xD1;
-		static const uint64_t DescriptorOffsetRace = 0x158;
-		static const uint64_t DescriptorOffsetLevel = 0x134;
-		static const uint64_t DescriptorOffsetHealth = 0xDC;
-		static const uint64_t DescriptorOffsetMaxHealth = 0xFC;
-		static const uint64_t DescriptorOffsetEnergy = 0xE4;
-		static const uint64_t DescriptorOffsetMaxEnergy = 0x104;
-		static const uint64_t DescriptorOffsetTargetGuid = 0x9C;
 		static const uint64_t DescriptorOffsetSummonedBy = 0x5C;
+		static const uint64_t DescriptorOffsetTargetGuid = 0x9C;
+		static const uint64_t DescriptorOffsetClass = 0xD1;
+		static const uint64_t DescriptorOffsetHealth = 0xDC;
+		static const uint64_t DescriptorOffsetEnergy = 0xE4;
+		static const uint64_t DescriptorOffsetMaxHealth = 0xFC;
+		
+		static const uint64_t DescriptorOffsetMaxEnergy = 0x104;
+		
+		static const uint64_t DescriptorOffsetLevel = 0x134;
+		static const uint64_t DescriptorOffsetRace = 0x158;
 		static const uint64_t DescriptorOffsetUnitDynamicflags = 0x174;
 
 	};

@@ -492,17 +492,4 @@ T& operator%=(T& lhs, const uint128_t& rhs) {
 
 typedef uint128_t WowGuid128;
 
-/*
-struct WowGuid64 {
-	uint64_t guid1;
-	uint64_t guid2;
-
-	bool operator<(const WowGuid64& o) const {
-		return o.guid1 <= guid1 && o.guid2 < guid2;
-	}
-
-	bool operator=(const WowGuid64& o) const {
-		return o.guid1 == guid1 && o.guid2 == guid2;
-	}
-};
-*/
+std::ostream& operator<<(std::ostream& stream, const uint128_t& rhs);

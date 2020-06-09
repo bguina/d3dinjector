@@ -5,3 +5,8 @@ WowCorpseObject::WowCorpseObject(const uint8_t* baseAddress) :
 {
 
 }
+
+const WowCorpseDescriptor& WowCorpseObject::getCorpseData() const
+{
+	return get<WowCorpseDescriptor>();
+}

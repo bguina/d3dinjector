@@ -8,6 +8,7 @@
 
 #include "AGame.h"
 #include "IWowGame.h"
+#include "NameCache.h"
 
 typedef uint64_t WowGameTime;
 
@@ -37,7 +38,9 @@ public:
 
 	const SpellBook& getSpellBook() const override;
 	SpellBook& getSpellBook() override;
-
+	
+	const char* getObjectName(const WowGuid128& guid) const;
+	
 	const char* getVersionBuild() const override;
 	const char* getReleaseDate() const override;
 	const char* getVersion() const override;
@@ -54,6 +57,7 @@ private:
 	std::map<std::string, std::shared_ptr<ARecurrentServerObserver<WowGame>>> mObservers;
 	ObjectManager mObjMgr;
 	SpellBook mSpellBook;
+	NameCache mNameCache;
 	std::unique_ptr<IWindowController> mWindowController;
 };
 

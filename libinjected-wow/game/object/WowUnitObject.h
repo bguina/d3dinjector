@@ -2,6 +2,7 @@
 
 #include "../dump/WowGameDescriptors.h"
 #include "WowObject.h"
+#include "descriptor/WowUnitDescriptor.h"
 
 class WowGame;
 
@@ -31,13 +32,7 @@ public:
 	virtual int getMaxEnergy() const;
 
 	virtual bool isInCombat() const;
-
-	virtual bool isLootable() const;
 	
-	virtual bool isTappedByOther() const;
-	
-	virtual bool isTappedByMe() const;
-
 	virtual WowGuid128 getSummonedBy() const;
 
 	virtual WowGuid128 getTargetGuid() const;
@@ -46,8 +41,12 @@ public:
 
 	virtual void moveTo(WowGame& game, const WowVector3f& destination);
 
-	virtual bool evaluateAggroDistanceWith(const WowUnitObject& unit) const;
+	virtual float evaluateAggroDistanceWith(const WowUnitObject& unit) const;
+	
+	const WowUnitDescriptor& getUnitData() const;
+	const WowUnitDynamicData& getUnitDynamicData() const;
 
+protected:
 };
 
 inline std::ostream& operator<<(

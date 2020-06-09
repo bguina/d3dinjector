@@ -168,7 +168,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AGame.cpp" />
-    <ClCompile Include="MemoryObject.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.pch</PrecompiledHeaderFile>
