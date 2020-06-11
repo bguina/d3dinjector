@@ -4,7 +4,9 @@
 
 #pragma pack(push, 1)
 
-struct WowUnitDescriptor : WowObjectDescriptor	// = 0x74
+//https://www.ownedcore.com/forums/world-of-warcraft/world-of-warcraft-bots-programs/wow-memory-editing/839080-classic-1-13-3-32887-a.html
+// Jadd's answer
+struct WowUnitDescriptor : WowObjectDescriptor	// = 0x1C
 {
 	uint32_t charm[4]; // size 4 flags: MIRROR_ALL
 	uint32_t summon[4]; // size 4 flags: MIRROR_ALL
@@ -16,17 +18,20 @@ struct WowUnitDescriptor : WowObjectDescriptor	// = 0x74
 	WowGuid128 lookAtControllerTarget; // size 4 flags: MIRROR_ALL
 	WowGuid128 target; // 0x9C size 4 flags: MIRROR_ALL
 	WowGuid128 battlePetCompanionGuid; // size 4 flags: MIRROR_ALL
-	uint32_t battlePetDatabaseId[2]; // size 2 flags: MIRROR_ALL
+	uint64_t battlePetDatabaseId; // size 2 flags: MIRROR_ALL
 	uint32_t channelData[2]; // size 2 flags: 
-	uint32_t summonedByHomeRealm; // size 1 flags: MIRROR_ALL //race?
-	uint32_t sex; // size 1 flags: MIRROR_ALL
+	uint32_t summonedByHomeRealm; // size 1 flags: MIRROR_ALL
+	uint8_t race; // size 1 flags: MIRROR_ALL
+	uint8_t classId; // size 1 flags: MIRROR_ALL
+	uint8_t playerClassId; // size 1 flags: MIRROR_ALL
+	uint8_t sex; // size 1 flags: MIRROR_ALL
 	uint32_t displayPower; // size 1 flags: MIRROR_ALL
 	uint32_t overrideDisplayPowerId; // size 1 flags: MIRROR_ALL
-	uint32_t health[2]; // size 2 flags: MIRROR_VIEWER_DEPENDENT
-	uint32_t power[6]; // size 6 flags: 
-	uint32_t maxHealth[2]; // size 2 flags: MIRROR_VIEWER_DEPENDENT
-	uint32_t maxPower[6]; // size 6 flags: MIRROR_ALL
-	uint32_t modPowerRegen[6]; // size 6 flags: 
+	uint64_t health; // size 2 flags: MIRROR_VIEWER_DEPENDENT
+	uint64_t power[3]; // size 6 flags: 
+	uint64_t maxHealth; // size 2 flags: MIRROR_VIEWER_DEPENDENT  // 0xFC ?
+	uint64_t maxPower[3]; // size 6 flags: MIRROR_ALL
+	uint64_t modPowerRegen[3]; // size 6 flags: 
 	uint32_t level; // size 1 flags: MIRROR_ALL
 	uint32_t effectiveLevel; // size 1 flags: MIRROR_ALL
 	uint32_t contentTuningId; // size 1 flags: MIRROR_ALL
@@ -67,7 +72,7 @@ struct WowUnitDescriptor : WowObjectDescriptor	// = 0x74
 	uint32_t modHasteRegen; // size 1 flags: MIRROR_ALL
 	uint32_t modTimeRate; // size 1 flags: MIRROR_ALL
 	uint32_t createdBySpell; // size 1 flags: MIRROR_ALL
-	uint32_t npcFlags[2]; // size 2 flags: 
+	uint64_t npcFlags; // size 2 flags:							// 0x1EC	CGUnitData::npcFlags
 	uint32_t emoteState; // size 1 flags: MIRROR_ALL
 	uint32_t trainingPointsTotal; // size 1 flags: MIRROR_OWNER
 	uint32_t stats[5]; // size 5 flags: 

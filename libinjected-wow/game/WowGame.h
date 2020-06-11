@@ -14,14 +14,13 @@ typedef uint64_t WowGameTime;
 
 class IWindowController;
 
-class WowGame : public AGame, public IWowGame
+class WowGame final : public AGame, public IWowGame
 {
 public:
 	WowGame(long pid, const uint8_t* baseAddress);
 	~WowGame();
 	
-	long long getSystemTime() const override;
-	uint64_t getFrameTime() const override;
+	uint64_t getTime() const override;
 
 	const IWindowController* getWindowController() const override;
 	IWindowController* getWindowController() override;
@@ -54,7 +53,7 @@ public:
 	bool removeObserver(const std::string& name);
 
 	template<typename U>
-	const U& getFunction(uint64_t offset) const {
+	const U& getFunction(const uint64_t offset) const {
 		return *reinterpret_cast<U*>(getAddress() + offset);
 	}
 	
@@ -67,19 +66,16 @@ private:
 	std::unique_ptr<IWindowController> mWindowController;
 };
 
-inline std::ostream& operator<<(
-	std::ostream& out,
-	const class WowGame& obj
-	)
+inline std::ostream& operator<<(std::ostream& out,const class WowGame& obj)
 {
 	out << "[WowGame@" << (void*)obj.getAddress() << "]" << std::endl;
-	ObjectManager objMgr = obj.getObjectManager();
-	out << objMgr;
 
-	if (obj.isInGameOrLoading()) {
-		SpellBook spellBookMgr = obj.getSpellBook();
-		out << spellBookMgr;
-	}
+	//if (obj.isInGameOrLoading()) {
+	//	const auto& spellBookMgr = obj.getSpellBook();
+	//	const auto& objMgr = obj.getObjectManager();
+	//	out << spellBookMgr;
+	//	out << objMgr;
+	//}
 
 	return out;
 }

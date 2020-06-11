@@ -1,18 +1,21 @@
-#include "../dump/WowGameOffsets.h"
-#include "../WowGame.h"
 
 #include "WowUnitObject.h"
+#include "../../dump/WowGameOffsets.h"
+#include "../../WowGame.h"
+#include "windowcontroller/WinVirtualKey.h"
 
 WowUnitObject::WowUnitObject(const WowObjectStruct* baseAddress, WowGame& game) :
 	WowObject(baseAddress, game)
 {
 }
 
-WowUnitClass WowUnitObject::getClass() const {
-	return *reinterpret_cast<const WowUnitClass*>(getDynamicDataAddress() + WowGameOffsets::WowUnitObject::DescriptorOffsetClass);
+WowUnitClass WowUnitObject::getClass() const
+{
+	return (WowUnitClass)getUnitData().classId;
 }
 
-std::string WowUnitObject::getClassLabel() const {
+std::string WowUnitObject::getClassLabel() const
+{
 	switch (getClass())
 	{
 	case WowUnitClass::Warrior: return "Warrior";
@@ -30,47 +33,89 @@ std::string WowUnitObject::getClassLabel() const {
 	return "";
 }
 
-WowUnitRace WowUnitObject::getRace() const {
-	return *reinterpret_cast<const WowUnitRace*>(getDynamicDataAddress() + WowGameOffsets::WowUnitObject::DescriptorOffsetRace);
+WowUnitRace WowUnitObject::getRace() const
+{
+	return (WowUnitRace)getUnitData().race;
 }
 
-int WowUnitObject::getLevel() const {
-	return *reinterpret_cast<const uint32_t*>(getDynamicDataAddress() + WowGameOffsets::WowUnitObject::DescriptorOffsetLevel);
+int WowUnitObject::getLevel() const
+{
+	return getUnitData().level;
 }
 
-int WowUnitObject::getHealth() const {
-	return *reinterpret_cast<const uint32_t*>(getDynamicDataAddress() + WowGameOffsets::WowUnitObject::DescriptorOffsetHealth);
+int WowUnitObject::getHealth() const
+{
+	return getUnitData().health;
 }
 
-int WowUnitObject::getMaxHealth() const {
-	return *reinterpret_cast<const uint32_t*>(getDynamicDataAddress() + WowGameOffsets::WowUnitObject::DescriptorOffsetMaxHealth);
+int WowUnitObject::getMaxHealth() const
+{
+	return getUnitData().maxHealth;
 }
 
-float WowUnitObject::getHealthPercent() const {
-	const auto currentHealth = *reinterpret_cast<const uint32_t*>(getDynamicDataAddress() + WowGameOffsets::WowUnitObject::DescriptorOffsetHealth);
-	const auto maxHealth = *reinterpret_cast<const uint32_t*>(getDynamicDataAddress() + WowGameOffsets::WowUnitObject::DescriptorOffsetMaxHealth);
-	return (currentHealth * 100.00f / maxHealth);
+float WowUnitObject::getHealthPercent() const
+{
+	return getHealth() * 100.00f / getMaxHealth();
 }
 
-bool WowUnitObject::isDead() const {
+bool WowUnitObject::isDead() const
+{
 	return *reinterpret_cast<const uint32_t*>((getDynamicDataAddress() + WowGameOffsets::WowObject::DescriptorOffsetObjectDynamicflags)) & uint32_t(WowObjectDynamicFlags::Dead);
 }
 
-int WowUnitObject::getEnergy() const {
+uint64_t WowUnitObject::getNpcFlags() const
+{
+	return getUnitData().npcFlags;
+}
+
+std::string WowUnitObject::getNpcFlagsLabel() const
+{
+	std::stringstream ss;
+	const auto flags(getNpcFlags());
+
+	ss << "[";
+	if (flags & Gossip) ss << "Gossip";
+	if (flags & Quest) ss << "Quest";
+	if (flags & Vendor) ss << "Vendor";
+	if (flags & Taxi) ss << "Taxi";
+	if (flags & Trainer) ss << "Trainer";
+	if (flags & Healer) ss << "Healer";
+	if (flags & Innkeeper) ss << "Innkeeper";
+	if (flags & Banker) ss << "Banker";
+	if (flags & GuildMaster) ss << "GuildMaster";
+	if (flags & TabardDesigner) ss << "TabardDesigner";
+	//if (flags & Petition) ss << "Petition";
+	if (flags & BattleMaster) ss << "BattleMaster";
+	if (flags & Auctioneer) ss << "Auctioneer";
+	if (flags & StableMaster) ss << "StableMaster";
+	if (flags & Repairer) ss << "Repairer";
+	ss << "]";
+	return ss.str();
+}
+
+bool WowUnitObject::isNpcTrader() const
+{
+	return getNpcFlags() & (Vendor | Repairer);
+}
+
+int WowUnitObject::getEnergy() const
+{
 	return *reinterpret_cast<const uint32_t*>(getDynamicDataAddress() + WowGameOffsets::WowUnitObject::DescriptorOffsetEnergy);
 }
 
-int WowUnitObject::getMaxEnergy() const {
+int WowUnitObject::getMaxEnergy() const
+{
 	return *reinterpret_cast<const uint32_t*>((getDynamicDataAddress() + WowGameOffsets::WowUnitObject::DescriptorOffsetMaxEnergy));
 }
 
-bool WowUnitObject::isInCombat() const {
+bool WowUnitObject::isInCombat() const
+{
 	return *reinterpret_cast<const uint32_t*>((getDynamicDataAddress() + WowGameOffsets::WowUnitObject::DescriptorOffsetUnitDynamicflags)) & uint32_t(WowUnitDynamicFlags::isInCombat);
 }
 
 WowAura* WowUnitObject::getAuraByIndex(const int index) const
 {
-	typedef WowAura*(__fastcall UnitGetAuraByIndex)(const uint8_t* self, uint32_t idx);
+	typedef WowAura* (__fastcall UnitGetAuraByIndex)(const uint8_t* self, uint32_t idx);
 	return mGame.getFunction<UnitGetAuraByIndex>(0x7625E0)(getAddress(), index);
 }
 
@@ -85,15 +130,18 @@ bool WowUnitObject::hasAura(const unsigned int spellId) const
 	return false;
 }
 
-WowGuid128  WowUnitObject::getSummonedBy() const {
+WowGuid128  WowUnitObject::getSummonedBy() const
+{
 	return *(WowGuid128*)(getDynamicDataAddress() + WowGameOffsets::WowUnitObject::DescriptorOffsetSummonedBy);
 }
 
-const WowGuid128* WowUnitObject::getTargetGuid() const {
+const WowGuid128* WowUnitObject::getTargetGuid() const
+{
 	return (WowGuid128*)(getDynamicDataAddress() + WowGameOffsets::WowUnitObject::DescriptorOffsetTargetGuid);
 }
 
-void WowUnitObject::moveTo(WowGame& game, const WowVector3f& destination) {
+void WowUnitObject::moveTo(WowGame& game, const WowVector3f& destination)
+{
 	const auto delta = getPosition().getFacingDeltaDegrees(getFacingDegrees(), destination);
 	const auto anglePrecision = 10;
 
@@ -115,8 +163,7 @@ float WowUnitObject::evaluateAggroDistanceWith(const WowUnitObject& unit) const
 
 const WowUnitDescriptor& WowUnitObject::getUnitData() const
 {
-	return *(WowUnitDescriptor*)getAddress();
-	//return get<WowUnitDescriptor>();
+	return getDescriptorData<WowUnitDescriptor>();
 }
 
 const WowUnitDynamicData& WowUnitObject::getUnitDynamicData() const

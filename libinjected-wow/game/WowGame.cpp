@@ -21,12 +21,7 @@ WowGame::WowGame(const long pid, const uint8_t* baseAddress) :
 
 WowGame::~WowGame() = default;
 
-long long WowGame::getSystemTime() const
-{
-	return GetTickCount64();
-}
-
-uint64_t WowGame::getFrameTime() const
+uint64_t WowGame::getTime() const
 {
 
 	typedef int64_t(FrameTimeGetCurTimeMs)();

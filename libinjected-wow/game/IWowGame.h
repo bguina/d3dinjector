@@ -17,8 +17,7 @@ public:
 	virtual const IWindowController* getWindowController() const = 0;
 	virtual IWindowController* getWindowController() = 0;
 
-	virtual long long getSystemTime() const = 0;
-	virtual uint64_t getFrameTime() const = 0;
+	virtual uint64_t getTime() const = 0;
 	virtual void update() = 0;
 
 	virtual bool isLoggedIn() const = 0;

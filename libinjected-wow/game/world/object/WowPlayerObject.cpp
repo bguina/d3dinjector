@@ -8,7 +8,6 @@ WowPlayerObject::WowPlayerObject(const WowObjectStruct* baseAddress, WowGame& ga
 const WowPlayerDescriptor& WowPlayerObject::getPlayerData() const
 {
 	return getDescriptorData<WowPlayerDescriptor>();
-
 }
 
 const WowPlayerDynamicDescriptor& WowPlayerObject::getPlayerDynamicData() const

@@ -59,13 +59,13 @@ protected:
 	template<typename T>
 	const T& getDescriptorData() const
 	{
-		return *get<T*>((uint64_t)getDynamicDataAddress());
+		return *(T*)get().descriptor;
 	}
 
 	template<typename T>
-	T& getDynamicData()
+	T& getDescriptorData()
 	{
-		return *get<T*>((uint64_t)getDynamicDataAddress());
+		return *(T*)get().descriptor;
 	}
 };
 
