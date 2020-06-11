@@ -1,7 +1,7 @@
 #include "BaseWowBot.h"
 
 #include "../game/WowGame.h"
-#include "../game/object/WowActivePlayerObject.h"
+#include "../game/world/object/WowActivePlayerObject.h"
 #include "../pathfinder/LinearPathFinder.h"
 
 BaseWowBot::BaseWowBot(const std::string& tag) :
@@ -32,17 +32,17 @@ void BaseWowBot::_logDebug() const
 		// show info relative to self
 		mDbg << "Self position is " << self->getPosition() << " angle is " << self->getFacingDegrees() << std::endl;
 		mDbg << "Self in combat: " << self->isInCombat() << std::endl;
-		const auto targetGuid = self->getTargetGuid();
+		const auto&  targetGuid = *self->getTargetGuid();
 
 		if (0 != targetGuid)
 		{
 			const std::shared_ptr<const WowUnitObject> target = mGame->getObjectManager().getObjectByGuid<WowUnitObject>(targetGuid);
 			
 			if (nullptr != target) {
-				mDbg << "Target: " << targetGuid.upper() << targetGuid.lower() << " can be attacked? " << self->canAttack(*mGame, *target) << std::endl;
+				mDbg << "Target: " << targetGuid.upper() << targetGuid.lower() << " can be attacked? " << self->canAttack(*target) << std::endl;
 			}
 			else {
-				mDbg << FileLogger::err << "Target: " << targetGuid.upper() << targetGuid.lower() << " can be attacked? " << (uint32_t)self->canAttack(*mGame, *target) << FileLogger::info << std::endl;
+				mDbg << FileLogger::err << "Target: " << targetGuid.upper() << targetGuid.lower() << " can be attacked? " << (uint32_t)self->canAttack(*target) << FileLogger::info << std::endl;
 			}
 		}
 

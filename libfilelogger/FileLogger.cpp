@@ -62,8 +62,7 @@ FileLogger::FileLogger(const std::string& tag, const std::string& prefix) :
 
 }
 
-FileLogger::~FileLogger() {
-}
+FileLogger::~FileLogger() = default;
 
 const std::string& FileLogger::getTag() const {
 	return mTag;

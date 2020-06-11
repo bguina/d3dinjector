@@ -4,7 +4,6 @@
 
 #include "IWowBot.h"
 #include "../game/WowGame.h"
-#include "../game/object/WowGuid128.h"
 
 class BaseWowBot : public IWowBot
 {

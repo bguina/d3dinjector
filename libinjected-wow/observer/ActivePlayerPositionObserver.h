@@ -2,7 +2,7 @@
 
 #include "AWowGameObserver.h"
 
-#include "../game/WowVector3f.h"
+#include "../game/world/WowVector3f.h"
 
 class Client;
 

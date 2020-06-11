@@ -3,12 +3,12 @@
 #include "observer/ARecurrentServerObserver.h"
 
 #include "FileLogger.h"
-#include "ObjectManager.h"
-#include "SpellBook.h"
+#include "world/NameCache.h"
+#include "world/ObjectManager.h"
+#include "world/SpellBook.h"
 
 #include "AGame.h"
 #include "IWowGame.h"
-#include "NameCache.h"
 
 typedef uint64_t WowGameTime;
 
@@ -20,7 +20,8 @@ public:
 	WowGame(long pid, const uint8_t* baseAddress);
 	~WowGame();
 	
-	long long getTime() const override;
+	long long getSystemTime() const override;
+	uint64_t getFrameTime() const override;
 
 	const IWindowController* getWindowController() const override;
 	IWindowController* getWindowController() override;
@@ -47,11 +48,16 @@ public:
 
 	int getInGameFlags() const override;
 
-	bool traceLine(const WowVector3f& from, const WowVector3f& to, uint64_t flags) const override;
+	bool traceLine(const WowVector3f& from, const WowVector3f& to, WowVector3f* result) const override;
 	
 	bool addObserver(const std::string& name, const std::shared_ptr<ARecurrentServerObserver<WowGame>>& observer);
 	bool removeObserver(const std::string& name);
 
+	template<typename U>
+	const U& getFunction(uint64_t offset) const {
+		return *reinterpret_cast<U*>(getAddress() + offset);
+	}
+	
 private:
 	FileLogger mDbg;
 	std::map<std::string, std::shared_ptr<ARecurrentServerObserver<WowGame>>> mObservers;

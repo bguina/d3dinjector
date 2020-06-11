@@ -7,22 +7,31 @@
 
 #include "windowcontroller/PostMessageWindowController.h"
 #include "observer/ARecurrentServerObserver.h"
+#include "world/intersect/Intersect.h"
 
-WowGame::WowGame(long pid, const uint8_t* baseAddress) :
+WowGame::WowGame(const long pid, const uint8_t* baseAddress) :
 	AGame(pid, baseAddress),
 	mDbg("WowGame"),
 	mObjMgr((const uint8_t**)(getAddress() + WowGameOffsets::WowObjectManager::OffsetObjectManagerBase)),
-	mSpellBook((const uint8_t*)(getAddress() + WowGameOffsets::WowGame::OffsetSpellBookBase)),
-	mNameCache((const uint8_t*)(getAddress() + WowGameOffsets::WowGame::OffsetNameCacheBase)),
+	mSpellBook((const uint8_t*)(getAddress() + WowGameOffsets::OffsetSpellBookBase)),
+	mNameCache((const uint8_t*)(getAddress() + WowGameOffsets::OffsetNameCacheBase)),
 	mWindowController(std::make_unique<PostMessageWindowController>(FindMainWindow(pid)))
 {
 }
 
 WowGame::~WowGame() = default;
 
-long long WowGame::getTime() const
+long long WowGame::getSystemTime() const
 {
 	return GetTickCount64();
+}
+
+uint64_t WowGame::getFrameTime() const
+{
+
+	typedef int64_t(FrameTimeGetCurTimeMs)();
+	const auto func(getFunction<FrameTimeGetCurTimeMs>(WowGameOffsets::FunctionFrameTime_GetCurTimeMs));
+	return func();
 }
 
 bool WowGame::isLoggedIn() const
@@ -32,7 +41,7 @@ bool WowGame::isLoggedIn() const
 
 bool WowGame::isLoading() const
 {
-	return *(uint32_t*)(getAddress() + WowGameOffsets::WowGame::OffsetIsLoadingOrConnecting);
+	return *(uint32_t*)(getAddress() + WowGameOffsets::OffsetIsLoadingOrConnecting);
 }
 
 bool WowGame::isInGameOrLoading() const
@@ -42,9 +51,10 @@ bool WowGame::isInGameOrLoading() const
 
 void WowGame::update()
 {
-	mObjMgr.scan();
+	mObjMgr.scan(*this);
 
-	for (auto it = mObservers.begin(); it != mObservers.end(); ++it) {
+	for (auto it = mObservers.begin(); it != mObservers.end(); ++it) 
+	{
 		it->second->capture(*this);
 		mDbg.i("GameObserver: capture of " + it->first);
 	}
@@ -62,7 +72,7 @@ IWindowController* WowGame::getWindowController()
 
 const uint32_t* WowGame::getCamera() const
 {
-	return get<const uint32_t*>(WowGameOffsets::WowCamera::OffsetCameraBase);
+	return get<const uint32_t*>(WowGameOffsets::OffsetCameraBase);
 }
 
 const ObjectManager& WowGame::getObjectManager() const
@@ -84,46 +94,45 @@ SpellBook& WowGame::getSpellBook() {
 	return mSpellBook;
 }
 
-const char* WowGame::getObjectName(const WowGuid128& guid) const
+const char* WowGame::getObjectName(const WowGuid128 & guid) const
 {
 	return mNameCache.getObjectName(guid);
 }
 
 const char* WowGame::getVersionBuild() const
 {
-	return (const char*)(getAddress() + WowGameOffsets::WowGame::OffsetBuildVersion);
+	return (const char*)(getAddress() + WowGameOffsets::OffsetBuildVersion);
 }
 
 const char* WowGame::getReleaseDate() const
 {
-	return (const char*)(getAddress() + WowGameOffsets::WowGame::OffsetReleaseDate);
+	return (const char*)(getAddress() + WowGameOffsets::OffsetReleaseDate);
 }
 
 const char* WowGame::getVersion() const
 {
-	return (const char*)(getAddress() + WowGameOffsets::WowGame::OffsetVersion);
+	return (const char*)(getAddress() + WowGameOffsets::OffsetVersion);
 }
 
-int  WowGame::getInGameFlags() const
+int WowGame::getInGameFlags() const
 {
-	return *(int*)(getAddress() + WowGameOffsets::WowGame::OffsetInGameFlags);
+	return *(int*)(getAddress() + WowGameOffsets::OffsetInGameFlags);
 }
 
-typedef char(__fastcall* Intersect) (const WowVector3f*, const WowVector3f*, WowVector3f*, __int64, int);
-
-bool WowGame::traceLine(const WowVector3f& from, const WowVector3f& to, uint64_t flags) const
+bool WowGame::traceLine(const WowVector3f& from, const WowVector3f& to, WowVector3f* result) const
 {
-	const Intersect intersect = (Intersect)(getAddress() + WowGameOffsets::WowGame::FunctionWorldFrame_Intersect);
-	WowVector3f collision = WowVector3f();
+	Intersect intersect(*this, from, to);
 
-	return intersect(&to, &from, &collision, flags, 0);
+	if (nullptr != result)
+		return intersect.getCollision(*result);
+	return intersect.collides();
 }
 
 bool WowGame::addObserver(const std::string& name, const std::shared_ptr<ARecurrentServerObserver<WowGame>>& observer)
 {
 	const auto result = mObservers.find(name);
 
-	if (result == mObservers.end()) 
+	if (result == mObservers.end())
 	{
 		mDbg.i("added observer " + name);
 		mObservers.insert(std::pair<std::string, std::shared_ptr<ARecurrentServerObserver<WowGame>>>(name, observer));
@@ -133,16 +142,18 @@ bool WowGame::addObserver(const std::string& name, const std::shared_ptr<ARecurr
 	return false;
 }
 
-bool WowGame::removeObserver(const std::string& name)
+bool WowGame::removeObserver(const std::string & name)
 {
 	const auto result = mObservers.find(name);
 
-	if (result != mObservers.end()) {
+	if (result != mObservers.end()) 
+	{
 		mObservers.erase(result);
 		mDbg.i("removed observer " + name);
 		return true;
 	}
-	else {
+	else 
+	{
 		mDbg.w("could not find observer " + name + " for removal");
 		return false;
 	}

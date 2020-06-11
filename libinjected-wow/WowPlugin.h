@@ -26,7 +26,7 @@ public:
 	virtual bool onD3dRender() override;
 
 protected:
-	bool read_server_messages();
+	bool readServerMessages();
 
 	std::unique_ptr<Client> mClient;
 	std::shared_ptr<WowGame> mGame;

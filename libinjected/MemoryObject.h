@@ -2,17 +2,30 @@
 
 #include <cstdint>
 
+template<typename T>
 class MemoryObject {
 public:
-	MemoryObject(const uint8_t* address) :
+	MemoryObject(const T* address) :
 		mAddress(address)
 	{
 	}
-	virtual ~MemoryObject() = default;
+
+	MemoryObject(const MemoryObject<T>& other) :
+		mAddress(other.mAddress)
+	{
+	}
+	
+	MemoryObject& operator=(const MemoryObject& rhs)
+	{
+		mAddress = rhs.mAddress;
+		return *this;
+	}
+	
+	virtual ~MemoryObject<T>() = default;
 
 	const uint8_t* getAddress() const
 	{
-		return mAddress;
+		return reinterpret_cast<const uint8_t*>(mAddress);
 	}
 
 	void rebase(const uint8_t* address)
@@ -24,27 +37,21 @@ public:
 	{
 		return nullptr == mAddress;
 	}
-
-	template<typename T>
-	const T& getFunction(uint64_t offset) const {
-		return *reinterpret_cast<T*>(getAddress() + offset);
-	}
 	
-	template<typename T>
 	const T& get() const {
 		return *reinterpret_cast<const T*>(getAddress());
 	}
 	
-	template<typename T>
-	const T& get(uint64_t offset) const {
-		return *reinterpret_cast<const T*>(getAddress() + offset);
+	template<typename U>
+	const U& get(uint64_t offset) const {
+		return *reinterpret_cast<const U*>(getAddress() + offset);
 	}
 
-	template<typename T>
+	template<typename U>
 	T* getWritable(uint64_t offset) {
-		return reinterpret_cast<T*>(getAddress() + offset);
+		return reinterpret_cast<U*>(getAddress() + offset);
 	}
 
 private:
-	const uint8_t* mAddress;
+	const T* mAddress;
 };

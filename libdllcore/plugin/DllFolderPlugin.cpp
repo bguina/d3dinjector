@@ -2,15 +2,13 @@
 
 #include "DllFolderPlugin.h"
 
-inline std::ostream& operator<<(
-	std::ostream& out,
-	const FILETIME& obj
-	)
+inline std::ostream& operator<<(std::ostream& out,const FILETIME& obj)
 {
 	return out << obj.dwHighDateTime << obj.dwLowDateTime;
 }
 
-FILETIME currentFtTime() {
+FILETIME currentFtTime()
+{
 	SYSTEMTIME stNewVersionTime;
 	FILETIME ftNewVersionTime;
 
@@ -28,29 +26,36 @@ DllFolderPlugin::DllFolderPlugin(const std::string& tag, bool keepAlive) :
 
 DllFolderPlugin::~DllFolderPlugin() = default;
 
-std::string DllFolderPlugin::getTag() const {
+std::string DllFolderPlugin::getTag() const
+{
 	return "DllFolderPlugin[" + getLibraryPath() + ":" + std::to_string(getLibraryVersion()) + "]";
 }
 
-std::string DllFolderPlugin::getLibraryFolder() const {
+std::string DllFolderPlugin::getLibraryFolder() const
+{
 	return wstringConvertToString(mFolder);
 }
 
-void DllFolderPlugin::freeLibrary() {
+void DllFolderPlugin::freeLibrary()
+{
+	FileLogger dbg(mDbg, "freeLibrary");
+	
 	DllPlugin::freeLibrary();
 	mCurrentVersion = { 0,0 };
 }
 
-bool DllFolderPlugin::loadFolder(const std::wstring& path) {
+bool DllFolderPlugin::loadFolder(const std::wstring& path)
+{
 	FileLogger dbg(mDbg, "loadFolder");
 	std::wstring latestLibrary;
-	const FILETIME latestTs(lookupLatest(path, latestLibrary));
+	const auto latestTs(lookupLatest(path, latestLibrary));
 
-	dbg << FileLogger::info << "freeing any previous library" << FileLogger::normal << std::endl;
+	dbg << dbg.i() << "freeing any previous library" << dbg.endl();
 	freeLibrary();
 
 	mFolder = path;
-	if (!latestLibrary.empty() && loadLibrary(latestLibrary)) {
+	if (!latestLibrary.empty() && loadLibrary(latestLibrary)) 
+	{
 		mCurrentVersion = latestTs;
 		return true;
 	}
@@ -59,11 +64,11 @@ bool DllFolderPlugin::loadFolder(const std::wstring& path) {
 	return false;
 }
 
-
-bool DllFolderPlugin::refreshLibrary() {
+bool DllFolderPlugin::refreshLibrary()
+{
 	FileLogger dbg(mDbg, "refreshLibrary");
 	std::wstring latestLibrary;
-	const FILETIME latestTs = lookupLatest(mFolder, latestLibrary);
+	const auto latestTs = lookupLatest(mFolder, latestLibrary);
 
 	if (!latestLibrary.empty() && CompareFileTime(&latestTs, &mCurrentVersion) > 0) {
 		dbg << FileLogger::info << " found new library version " << wstringConvertToString(latestLibrary) << FileLogger::normal << std::endl;
@@ -81,9 +86,10 @@ bool DllFolderPlugin::refreshLibrary() {
 	return false;
 }
 
-bool DllFolderPlugin::loadLibrary(const std::wstring& dllPath) {
+bool DllFolderPlugin::loadLibrary(const std::wstring& dllPath)
+{
 	FileLogger dbg(mDbg, "loadLibrary");
-	auto targetDup = dllPath.substr(0, dllPath.find_last_of('.')) + L"_lock.dll";
+	const auto targetDup = dllPath.substr(0, dllPath.find_last_of('.')) + L"_lock.dll";
 	bool loaded;
 
 	// try to remove previously existing target location
@@ -105,7 +111,8 @@ bool DllFolderPlugin::loadLibrary(const std::wstring& dllPath) {
 	return loaded;
 }
 
-bool DllFolderPlugin::onD3dRender() {
+bool DllFolderPlugin::onD3dRender()
+{
 	FileLogger dbg(mDbg, "onD3dRender");
 
 	dbg << FileLogger::debug << "library timestamp: " << mCurrentVersion << FileLogger::normal << std::endl;
@@ -123,7 +130,8 @@ bool DllFolderPlugin::onD3dRender() {
 	return mKeepAlive;
 }
 
-SYSTEMTIME systemTimeAdd(SYSTEMTIME s, double seconds) {
+SYSTEMTIME systemTimeAdd(SYSTEMTIME s, const double seconds)
+{
 	FILETIME f;
 	ULARGE_INTEGER u;
 
@@ -147,7 +155,8 @@ FILETIME DllFolderPlugin::lookupLatest(const std::wstring& path, std::wstring& r
 	WIN32_FIND_DATA fd;
 
 	HANDLE hFind = ::FindFirstFile(search_path.c_str(), &fd);
-	if (hFind != INVALID_HANDLE_VALUE) {
+	if (hFind != INVALID_HANDLE_VALUE) 
+	{
 		SYSTEMTIME stFewSecondsAgo;
 		FILETIME ftFewSecondsAgo;
 		double fewSecondsDelta = 2;
@@ -157,9 +166,10 @@ FILETIME DllFolderPlugin::lookupLatest(const std::wstring& path, std::wstring& r
 		SystemTimeToFileTime(&stFewSecondsAgo, &ftFewSecondsAgo);
 
 		do {
-			if (!(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) { // ignore subfolders
-				bool isNewer = CompareFileTime(&fd.ftLastWriteTime, &latestTs) > 0; // ftLastWriteTime must be lower than a ftFewSecondsAgo
-				bool isOldEnough = CompareFileTime(&ftFewSecondsAgo, &fd.ftLastWriteTime) > 0; // ftLastWriteTime must be lower than a ftFewSecondsAgo
+			if (!(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) 
+			{ // ignore subfolders
+				auto isNewer = CompareFileTime(&fd.ftLastWriteTime, &latestTs) > 0; // ftLastWriteTime must be lower than a ftFewSecondsAgo
+				auto isOldEnough = CompareFileTime(&ftFewSecondsAgo, &fd.ftLastWriteTime) > 0; // ftLastWriteTime must be lower than a ftFewSecondsAgo
 
 				if (false) {
 					dbg << FileLogger::debug << "stFewSecondsAgo " << ftFewSecondsAgo << FileLogger::normal << std::endl;
@@ -174,15 +184,16 @@ FILETIME DllFolderPlugin::lookupLatest(const std::wstring& path, std::wstring& r
 				}
 
 			}
-		} while (::FindNextFile(hFind, &fd));
-		::FindClose(hFind);
+		} while (FindNextFile(hFind, &fd));
+		FindClose(hFind);
 
 		if (!result.empty())
 			dbg << FileLogger::debug << "latest library created at " << latestTs << ": " << wstringConvertToString(result) << FileLogger::normal << std::endl;
 		else
 			dbg << FileLogger::warn << "folder is empty, no latest library" << FileLogger::normal << std::endl;
 	}
-	else {
+	else 
+	{
 		dbg << FileLogger::err << wstringConvertToString(path) << ": INVALID_HANDLE_VALUE" << FileLogger::normal << std::endl;
 
 	}

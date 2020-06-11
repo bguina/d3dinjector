@@ -1,5 +1,5 @@
 #pragma once
 
-#include "../game/WowVector3f.h"
+#include "../game/world/WowVector3f.h"
 
 typedef WowVector3f Vector3f;

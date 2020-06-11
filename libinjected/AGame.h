@@ -6,7 +6,7 @@
 
 #include "windowcontroller/IWindowController.h"
 
-class AGame : public MemoryObject
+class AGame : public MemoryObject<const uint8_t>
 {
 public:
 	AGame(long pid, const uint8_t* baseAddr);

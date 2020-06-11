@@ -31,5 +31,5 @@ void Lua::run(const std::string& script) {
 }
 
 void Lua::run(const char* script) {
-	mGame.getFunction<FrameScript_ExecuteBuffer>(WowGameOffsets::WowGame::FunctionFrameScript_ExecuteBuffer)(script, script, 0);
+	mGame.getFunction<FrameScript_ExecuteBuffer>(WowGameOffsets::FunctionFrameScript_ExecuteBuffer)(script, script, 0);
 }

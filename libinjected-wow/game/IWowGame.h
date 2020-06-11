@@ -1,8 +1,8 @@
 #pragma once
 
 #include "AGame.h"
-#include "SpellBook.h"
-#include "ObjectManager.h"
+#include "world/SpellBook.h"
+#include "world/ObjectManager.h"
 
 class WowVector3f;
 typedef uint64_t WowGameTime;
@@ -17,7 +17,8 @@ public:
 	virtual const IWindowController* getWindowController() const = 0;
 	virtual IWindowController* getWindowController() = 0;
 
-	virtual long long getTime() const = 0;
+	virtual long long getSystemTime() const = 0;
+	virtual uint64_t getFrameTime() const = 0;
 	virtual void update() = 0;
 
 	virtual bool isLoggedIn() const = 0;
@@ -42,6 +43,6 @@ public:
 
 	virtual int getInGameFlags() const = 0;
 
-	virtual bool traceLine(const WowVector3f& from, const WowVector3f& to, uint64_t flags) const = 0;
+	virtual bool traceLine(const WowVector3f& from, const WowVector3f& to, WowVector3f* result) const = 0;
 };
 

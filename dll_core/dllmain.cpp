@@ -15,27 +15,27 @@ static bool gShouldStop = false;
 /// CAREFUL: Do NOT use a C++ object that might get destructed after gShouldStop is being set to true.
 /// `gShouldStop=true` must be the last instruction to prevent Render() still being executed when MainThread frees self module handle.
 /// </summary>
-void Render(IDXGISwapChain* pThis, UINT SyncInterval, UINT Flags) {
+void Render(IDXGISwapChain* pThis, UINT syncInterval, UINT flags)
+{
 	static DllCore* sandbox = nullptr;
 
-	if (!gShouldStop) {
+	if (!gShouldStop)
+	{
 		FileLogger dbg("render");
-		boolean stopSandbox = false;
 
-
-		if (nullptr == sandbox) {
-			bool keepAlive = true;
-			auto plugin = new DllFolderPlugin("DllFolderPlugin", keepAlive);
+		if (nullptr == sandbox)
+		{
+			const auto keepAlive = true;
+			auto* plugin = new DllFolderPlugin("DllFolderPlugin", keepAlive);
 			const std::wstring folder(L"D:\\myplugins");
 			plugin->loadFolder(folder);
 			sandbox = new DllCore(plugin);
 		}
 
-		stopSandbox = !sandbox->onFrameRender();
 		drawSomeTriangle();
-
-
-		if (stopSandbox) {
+		
+		if (!sandbox->onFrameRender())
+		{
 			delete sandbox;
 
 			gShouldStop = true;
@@ -43,7 +43,8 @@ void Render(IDXGISwapChain* pThis, UINT SyncInterval, UINT Flags) {
 	}
 }
 
-void MainThread(void* pHandle) {
+void MainThread(void* pHandle)
+{
 
 	if (HookD3D(&Render)) {
 		while (!gShouldStop && !GetAsyncKeyState(VK_END)) {
@@ -54,16 +55,17 @@ void MainThread(void* pHandle) {
 	UnhookD3D(pHandle);
 }
 
-BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID)
+BOOL WINAPI DllMain(const HINSTANCE hInstDll, const DWORD fdwReason, LPVOID)
 {
 	switch (fdwReason)
 	{
 	case DLL_PROCESS_ATTACH:
-		DisableThreadLibraryCalls(hinstDLL);
-		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)MainThread, hinstDLL, 0, nullptr);
+		DisableThreadLibraryCalls(hInstDll);
+		CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)MainThread, hInstDll, 0, nullptr);
 		break;
 	case DLL_PROCESS_DETACH:
 		break;
+	default:;
 	}
 	return TRUE;
 }
