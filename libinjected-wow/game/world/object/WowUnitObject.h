@@ -57,7 +57,10 @@ public:
 
 	virtual bool isInCombat() const;
 
-	virtual WowAura* getAuraByIndex(int index) const;
+	virtual const uint32_t* getRawFlags() const;
+	virtual const uint32_t* getRawPower() const;
+	virtual WowAura* getRawAuraByIndex(int index) const;
+	
 	virtual bool hasAura(unsigned int spellId) const;
 
 	virtual WowGuid128 getSummonedBy() const;

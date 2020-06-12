@@ -13,11 +13,14 @@ public:
 	virtual bool canAttack(const WowUnitObject& target) const;
 
 	virtual bool isFriendly(const WowUnitObject& target) const;
+	
+	virtual bool jump();
+	virtual bool sitDown();
 
-	uint64_t interactWith(const WowGuid128* targetGuid);
+	virtual uint64_t interactWith(const WowGuid128* targetGuid);
 
-	const WowActivePlayerDescriptor& getActivePlayerData() const;
-	const CGActivePlayerDynamicDescriptor& getActivePlayerDynamicData() const;
+	virtual const WowActivePlayerDescriptor& getActivePlayerData() const;
+	virtual const CGActivePlayerDynamicDescriptor& getActivePlayerDynamicData() const;
 	
 protected:
 };

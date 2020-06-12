@@ -37,8 +37,8 @@ std::string WowPlugin::getTag() const
 
 void  WowPlugin::attachBot(IWowBot* bot)
 {
-	bot->attach(mGame);
 	mBot.reset(bot);
+	bot->attach(mGame);
 }
 
 bool WowPlugin::onD3dRender()
@@ -69,13 +69,14 @@ bool WowPlugin::onD3dRender()
 		{
 			dbg << FileLogger::debug << "agent is paused" << FileLogger::normal << std::endl;
 		}
+		
+		dbg << FileLogger::debug << "success" << FileLogger::normal << std::endl;
 	}
 	else
 	{
 		dbg << FileLogger::warn << "no bot is set" << FileLogger::normal << std::endl;
 	}
 
-	dbg << FileLogger::debug << "success" << FileLogger::normal << std::endl;
 
 	return true;
 }
@@ -137,23 +138,22 @@ bool WowPlugin::readServerMessages()
 		switch (msg.type)
 		{
 		case MessageType::RESUME:
+			if (nullptr != mBot && mBotPause) mBot->onResume();
 			mBotPause = false;
-			if (nullptr != mBot) mBot->onResume();
 			break;
 
 		case MessageType::POST_SERVER_EJECTION:
 			msg.eject = true;
+			if (nullptr != mBot && mBotPause) mBot->onPause();
 			mBotPause = true;
-			if (nullptr != mBot) mBot->onPause();
 			break;
 			
 		case MessageType::PAUSE:
+			if (nullptr != mBot && !mBotPause) mBot->onPause();
 			mBotPause = true;
-			if (nullptr != mBot) mBot->onPause();
 			break;
 
 		case MessageType::SUBSCRIBE_DLL_UPDATES:
-			//mBot->startSubscription();
 			for (auto it = msg.subscriptions->begin(); it != msg.subscriptions->end(); it++) 
 			{
 				if (*it == "position") 
@@ -162,8 +162,7 @@ bool WowPlugin::readServerMessages()
 			break;
 
 		case MessageType::UNSUBSCRIBE_DLL_UPDATES:
-			//mBot->stopSubscription();
-			for (std::vector<std::string>::const_iterator it = msg.subscriptions->begin(); it != msg.subscriptions->end(); it++) 
+			for (auto it = msg.subscriptions->begin(); it != msg.subscriptions->end(); it++) 
 			{
 				if (*it == "position") 
 					mGame->removeObserver("position");

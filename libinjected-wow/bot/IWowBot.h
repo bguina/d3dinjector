@@ -11,11 +11,11 @@ class ServerWowMessage;
 class IWowBot
 {
 public:
-	virtual ~IWowBot() = default;;
+	virtual ~IWowBot() = default;
 
 	virtual const std::string& getTag() const = 0;
 
-	virtual bool attach(std::shared_ptr<WowGame> game) = 0;
+	virtual void attach(std::shared_ptr<WowGame> game) = 0;
 
 	virtual void onResume() = 0;
 	virtual bool onEvaluate() = 0;

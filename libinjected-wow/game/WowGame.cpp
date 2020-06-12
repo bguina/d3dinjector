@@ -46,6 +46,7 @@ bool WowGame::isInGameOrLoading() const
 
 void WowGame::update()
 {
+	
 	mObjMgr.scan(*this);
 
 	for (auto it = mObservers.begin(); it != mObservers.end(); ++it) 

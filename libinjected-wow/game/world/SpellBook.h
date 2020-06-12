@@ -20,9 +20,11 @@ public:
 	bool isKnown(int spellId) const;
 	bool isLearnt(int spellId) const;
 
-	int64_t getSpellCooldown(const WowGame& game, int spellId) const;
+	uint64_t getSpellCooldownTime(const WowGame& game, int spellId) const;
 
-	bool castSpell(const WowGame& game, const uint32_t spellId, const uint128_t* target);
+	bool castSpell(const WowGame& game, uint32_t spellId, const uint128_t* target);
+	bool castSpell(const WowGame& game, uint32_t spellId, uint32_t itemId, const uint128_t* target);
+	
 	uint64_t* petInfoFindSpellById(const WowGame& game, const uint32_t petSpellId);
 	void petInfoSendPetAction(const WowGame& game, uint64_t* spell, const WowGuid128* target);
 	bool orderPetToAttackTarget(const WowGame& game, const WowGuid128* target);

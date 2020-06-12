@@ -3,7 +3,7 @@
 #include "MaxBot.h"
 
 #include "game/WowGame.h"
-#include "game/object/WowActivePlayerObject.h"
+#include "game/world/object/WowActivePlayerObject.h"
 #include "ServerWowMessage.h"
 #include "pathfinder/LinearPathFinder.h"
 
@@ -21,7 +21,7 @@ WowMaxBot::~WowMaxBot() {
 }
 
 bool WowMaxBot::handleWowMessage(ServerWowMessage& serverMessage) {
-	FileLogger dbg(mDbg, "handleWowMessage");
+	FileLogger dbg(mLog, "handleWowMessage");
 	bool handled = false;
 	dbg << FileLogger::verbose << "handleServerMessage " << (int)serverMessage.type << FileLogger::normal << std::endl;
 
@@ -52,13 +52,13 @@ bool WowMaxBot::onEvaluate() {
 
 	std::shared_ptr<WowActivePlayerObject> self = mGame->getObjectManager().getActivePlayer();
 	mDbg << FileLogger::info << TAG << " running" << FileLogger::normal << std::endl;
-	//mDbg.flush();
+	//mLog.flush();
 
 	if (self != nullptr)
 	{
-		std::shared_ptr<WowUnitObject> secondSelf(mGame->getObjectManager().getObjectByGuid<WowUnitObject>(self->getGuid()));
+		std::shared_ptr<WowUnitObject> secondSelf(mGame->getObjectManager().getObjectByGuid<WowUnitObject>(*self->getGuid()));
 
-		std::shared_ptr<WowUnitObject> myPet(mGame->getObjectManager().getObjectBySummonedGuid<WowUnitObject>(self->getGuid()));
+		std::shared_ptr<WowUnitObject> myPet(mGame->getObjectManager().getObjectBySummonedGuid<WowUnitObject>(*self->getGuid()));
 
 		if (myPet != nullptr) {
 
@@ -78,14 +78,14 @@ bool WowMaxBot::onEvaluate() {
 				uint64_t* ptrTmp = mGame->getSpellBook().petInfoFindSpellById(mGame, i);
 				if (ptrTmp != nullptr)
 				{
-					mDbg << FileLogger::info << "[Spell Pet Attack at : " << ptrTmp << " id == " << i << FileLogger::normal << std::endl;
+					mLog << FileLogger::info << "[Spell Pet Attack at : " << ptrTmp << " id == " << i << FileLogger::normal << std::endl;
 				}
 				i++;
 			}
 			*/
 
 
-			std::shared_ptr<WowUnitObject> currentTarget = mGame->getObjectManager().getObjectByGuid<WowUnitObject>(self->getTargetGuid());
+			std::shared_ptr<WowUnitObject> currentTarget = mGame->getObjectManager().getObjectByGuid<WowUnitObject>(*self->getTargetGuid());
 
 			if (currentTarget != nullptr)
 			{
@@ -93,9 +93,9 @@ bool WowMaxBot::onEvaluate() {
 			}
 
 
-			if (nullptr != mTargetUnit && (0 == mTargetUnit->getAddress() || mBlacklistedGuids.find(mTargetUnit->getGuid()) != mBlacklistedGuids.end()))
+			if (nullptr != mTargetUnit && (0 == mTargetUnit->getAddress() || mBlacklistedGuids.find(*mTargetUnit->getGuid()) != mBlacklistedGuids.end()))
 			{
-				mDbg << "GUID is blacklisted, ignoring" << mTargetUnit->getGuid().upper();
+				mDbg << "GUID is blacklisted, ignoring" << mTargetUnit->getGuid()->upper();
 				mTargetUnit = nullptr;
 			}
 			mDbg << "Elapsed time for feeding == " << GetTickCount64() - mLastFeedPet;
@@ -117,12 +117,12 @@ bool WowMaxBot::onEvaluate() {
 				mDbg.i("looking for a new unit to attack");
 				for (auto it = allUnits.begin(); it != allUnits.end(); it++)
 				{
-					if (self->isFriendly(*mGame, *(*it)) || (abs(self->getLevel() - (*it)->getLevel()) > 10) &&
-						mBlacklistedGuids.find((*it)->getGuid()) == mBlacklistedGuids.end())
+					if (self->isFriendly(*(*it)) || (abs(self->getLevel() - (*it)->getLevel()) > 10) &&
+						mBlacklistedGuids.find(*(*it)->getGuid()) == mBlacklistedGuids.end())
 					{
-						mBlacklistedGuids.insert((*it)->getGuid());
+						mBlacklistedGuids.insert(*(*it)->getGuid());
 					}
-					if (mBlacklistedGuids.find((*it)->getGuid()) == mBlacklistedGuids.end())
+					if (mBlacklistedGuids.find(*(*it)->getGuid()) == mBlacklistedGuids.end())
 					{
 						float unitDistance = self->getDistanceTo(**it);
 						if (unitDistance < distance) {
@@ -166,8 +166,8 @@ bool WowMaxBot::onEvaluate() {
 				if (self->getPosition().getDistanceTo(mTargetUnit->getPosition()) > 25 && mTargetUnit->getHealth() > 0)
 				{
 					mDbg << FileLogger::info << "My position" << self->getPosition() << FileLogger::normal << std::endl;
-					mDbg << FileLogger::info << "target unit " << mTargetUnit->getGuid().upper() << " still out of reach" << mTargetUnit->getPosition() << FileLogger::normal << std::endl;
-					//mDbg.i("target unit still out of reach");
+					mDbg << FileLogger::info << "target unit " << mTargetUnit->getGuid()->upper() << " still out of reach" << mTargetUnit->getPosition() << FileLogger::normal << std::endl;
+					//mLog.i("target unit still out of reach");
 
 					self->moveTo(*mGame, mTargetUnit->getPosition());
 
@@ -180,7 +180,7 @@ bool WowMaxBot::onEvaluate() {
 					}
 
 					/*
-					mDbg << FileLogger::warn
+					mLog << FileLogger::warn
 						<< "pressing left " << (delta > anglePrecision)
 						<< "pressing forward " << (abs(delta) < anglePrecision * 2)
 						<< "pressing right " << (delta < -anglePrecision)
@@ -216,10 +216,10 @@ bool WowMaxBot::onEvaluate() {
 						toLoop++;
 						if (mTargetUnit->isLootable() && toLoop < 50)
 						{
-							self->interactWith(*mGame, mTargetUnit->getGuidPtr());
+							self->interactWith(mTargetUnit->getGuid());
 						}
 						else if (toLoop == 50) {
-							mBlacklistedGuids.insert(mTargetUnit->getGuid());
+							mBlacklistedGuids.insert(*mTargetUnit->getGuid());
 							mInteractWith = true;
 							mOpeningCombat = true;
 							cacAttack = true;
@@ -244,41 +244,41 @@ bool WowMaxBot::onEvaluate() {
 					else if (mInteractWith == false && mOpeningCombat)
 					{
 						mDbg.i("Case -> serpent sting....");
-						mGame->getSpellBook().castSpell(*mGame, 13551, mTargetUnit->getGuidPtr()); //1978 serpent sting rank 1 //rank 2 13549 //rank3 13550
+						mGame->getSpellBook().castSpell(*mGame, 13551, mTargetUnit->getGuid()); //1978 serpent sting rank 1 //rank 2 13549 //rank3 13550
 						mOpeningCombat = false;
 					}
 					else if (mInteractWith) {
 						mDbg.i("Case -> mInteractWith....");
-						self->interactWith(*mGame, mTargetUnit->getGuidPtr());
-						mGame->getSpellBook().orderPetToAttackTarget(*mGame, mTargetUnit->getGuidPtr());
+						self->interactWith(mTargetUnit->getGuid());
+						mGame->getSpellBook().orderPetToAttackTarget(*mGame, mTargetUnit->getGuid());
 						mInteractWith = false;
 					}
 
 					else if (self->getPosition().getDistanceTo(mTargetUnit->getPosition()) < 5 && cacAttack) {
 						mDbg.i("Case -> raptor strike....");
-						mGame->getSpellBook().castSpell(*mGame, 14262, mTargetUnit->getGuidPtr());//2973 rank1 raptor strike //rank2 14260 //rank3 14261
+						mGame->getSpellBook().castSpell(*mGame, 14262, mTargetUnit->getGuid());//2973 rank1 raptor strike //rank2 14260 //rank3 14261
 						cacAttack = false;
 					}
 
 				}
 			}
 			else if (self->getHealthPercent() > 80) {
-				//mDbg.i("no mTargetUnit");
-				//mDbg.flush();
+				//mLog.i("no mTargetUnit");
+				//mLog.flush();
 				if (mPathFinder != nullptr) {
-					//mDbg.i("mPathFinder Getting my position");
-					//mDbg.flush();
+					//mLog.i("mPathFinder Getting my position");
+					//mLog.flush();
 					const Vector3f& selfPosition = self->getPosition();
-					//mDbg << FileLogger::info << "Position " << self->getPosition() << FileLogger::normal << std::endl;
-					//mDbg.flush();
+					//mLog << FileLogger::info << "Position " << self->getPosition() << FileLogger::normal << std::endl;
+					//mLog.flush();
 					Vector3f nextPosition;
 
 					if (mPathFinder->getNextPosition(selfPosition, nextPosition)) {
 						mDbg.i("mPathFinder moving along the path");
-						//mDbg.flush();
+						//mLog.flush();
 						self->moveTo(*mGame, nextPosition);
 						mDbg << FileLogger::info << "moving to " << nextPosition << FileLogger::normal << std::endl;
-						//mDbg.flush();
+						//mLog.flush();
 
 						if (GetTickCount64() - mLastJump > 1000 * 5)
 						{
@@ -327,7 +327,7 @@ void WowMaxBot::_logDebug() const {
 		size_t waypointsCount = 0;
 
 		waypointsCount = pathfinder->getWaypointsCount();
-		mDbg << "helped by LinearPathFinder with " << waypointsCount << " waypoints " << std::endl;
+		mLog << "helped by LinearPathFinder with " << waypointsCount << " waypoints " << std::endl;
 	}
-	else mDbg << " without PathFinder" << std::endl;
+	else mLog << " without PathFinder" << std::endl;
 }

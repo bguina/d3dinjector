@@ -4,11 +4,23 @@
 
 #pragma pack(push, 1)
 
+enum PowerType : uint8_t
+{
+	Mana = 1,
+	Rage = 2,
+	Focus = 3,
+	Energy = 4,
+	Happiness = 5,
+	RunicPower = 6,
+	Runes = 7,
+	Health = 8,
+};
+
 //https://www.ownedcore.com/forums/world-of-warcraft/world-of-warcraft-bots-programs/wow-memory-editing/839080-classic-1-13-3-32887-a.html
 // Jadd's answer
 struct WowUnitDescriptor : WowObjectDescriptor	// = 0x1C
 {
-	uint32_t charm[4]; // size 4 flags: MIRROR_ALL
+	uint32_t charm[4]; // = 0x1C + 4 flags: MIRROR_ALL
 	uint32_t summon[4]; // size 4 flags: MIRROR_ALL
 	uint32_t critter[4]; // size 4 flags: MIRROR_SELF
 	WowGuid128 charmedBy; // size 4 flags: MIRROR_ALL
@@ -28,10 +40,10 @@ struct WowUnitDescriptor : WowObjectDescriptor	// = 0x1C
 	uint32_t displayPower; // size 1 flags: MIRROR_ALL
 	uint32_t overrideDisplayPowerId; // size 1 flags: MIRROR_ALL
 	uint64_t health; // size 2 flags: MIRROR_VIEWER_DEPENDENT
-	uint64_t power[3]; // size 6 flags: 
+	uint32_t power[6]; // size 6 flags: 
 	uint64_t maxHealth; // size 2 flags: MIRROR_VIEWER_DEPENDENT  // 0xFC ?
-	uint64_t maxPower[3]; // size 6 flags: MIRROR_ALL
-	uint64_t modPowerRegen[3]; // size 6 flags: 
+	uint32_t maxPower[6]; // size 6 flags: MIRROR_ALL
+	uint32_t modPowerRegen[6]; // size 6 flags: 
 	uint32_t level; // size 1 flags: MIRROR_ALL
 	uint32_t effectiveLevel; // size 1 flags: MIRROR_ALL
 	uint32_t contentTuningId; // size 1 flags: MIRROR_ALL
@@ -43,7 +55,7 @@ struct WowUnitDescriptor : WowObjectDescriptor	// = 0x1C
 	uint32_t scalingDamageItemLevelCurveId; // size 1 flags: MIRROR_ALL
 	uint32_t factionTemplate; // size 1 flags: MIRROR_ALL
 	uint32_t virtualItems[6]; // size 6 flags: MIRROR_ALL
-	uint32_t flags; // size 1 flags: 
+	uint32_t flags; // size 1 flags:					// Dead = (1 << 26)
 	uint32_t flags2; // size 1 flags: 
 	uint32_t flags3; // size 1 flags: 
 	uint32_t auraState; // size 1 flags: MIRROR_ALL
@@ -119,6 +131,7 @@ struct WowUnitDescriptor : WowObjectDescriptor	// = 0x1C
 	uint32_t lookAtControllerId; // size 1 flags: MIRROR_ALL
 	WowGuid128 guildGuid; // size 4 flags: MIRROR_ALL
 };
+// dynamicflags = 0x174
 
 struct WowUnitDynamicData : WowObjectDescriptor
 {

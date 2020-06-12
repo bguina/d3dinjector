@@ -24,15 +24,14 @@ enum class WowObjectType : uint8_t {
 };
 
 enum class WowObjectDynamicFlags : uint32_t {
-	None = 0,
-	Invisible = 0x1,
-	Lootable = 0x4,
-	TrackUnit = 0x8,
-	Tapped = 0x10,
-	TappedByMe = 0x20,
-	Dead = 0x40,
-	ReferAFriendLinked = 0x80,
-	IsTappedByAllThreatList = 0x100,
+	Invisible = (1 << 0),
+	Lootable = (1 << 2), 
+	TrackUnit = (1 << 3),
+	Tapped = (1 << 4),
+	TappedByMe = (1 << 5),
+	Dead = (1 << 26),
+	ReferAFriendLinked = (1 << 7),
+	IsTappedByAllThreatList = (1 << 8),
 };
 
 //https://www.ownedcore.com/forums/world-of-warcraft/world-of-warcraft-bots-programs/wow-memory-editing/839080-classic-1-13-3-32887-a.html
@@ -57,7 +56,7 @@ enum class WowUnitRace : uint8_t {
 
 };
 
-enum class WowUnitDynamicFlags : uint32_t {
+enum class WowUnitFlags : uint32_t {
 	isInCombat = 0x0080000,
 };
 

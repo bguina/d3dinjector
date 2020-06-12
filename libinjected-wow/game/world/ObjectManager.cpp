@@ -7,18 +7,21 @@
 #include "WowObjects.h"
 #include "object/WowUnimplementedObject.h"
 
-ObjectManager::ObjectManager(
-	const uint8_t** baseAddress
-) :
-	mPointerAddr(baseAddress)
+ObjectManager::ObjectManager(const uint8_t** baseAddress) :
+	mPointerAddr(baseAddress),
+	mDbg("ObjectManager")
 {}
 
 bool ObjectManager::isEnabled() const {
-	return NULL != getBaseAddress();
+	return nullptr != getBaseAddress();
 }
 
 void ObjectManager::scan(WowGame& game) {
-	if (isEnabled()) {
+
+	
+	if (isEnabled()) 
+	{
+		FileLogger dbg(mDbg, "scan");
 		//std::set<WowGuid128> oldGuids;
 
 		/*
@@ -31,7 +34,8 @@ void ObjectManager::scan(WowGame& game) {
 
 		// Manually walk through the native ObjectManager linked list
 		for (WowObjectStruct* pObj = *(WowObjectStruct**)(getBaseAddress() + 0x18);
-			nullptr != pObj && !((uint64_t)pObj & 1); pObj = pObj->pNext)
+			nullptr != pObj && !((uint64_t)pObj & 1);
+			pObj = pObj->pNext)
 		{
 			WowObject thisObj = WowObject(pObj, game);
 			//std::map<WowGuid128, std::shared_ptr<WowObject>>::const_iterator oldObjInstance = mObjects.find(thisObj.getGuid());
@@ -93,8 +97,12 @@ void ObjectManager::scan(WowGame& game) {
 			mObjects.erase(*it);
 		}
 		*/
+
+		dbg << dbg.e() << "count= " << mObjects.size() << dbg.endl();
+
 	}
-	else {
+	else 
+	{
 		mObjects.clear();
 	}
 }

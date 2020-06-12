@@ -18,6 +18,7 @@ public:
 	bool vanished() const;
 
 	virtual const WowGuid128* getGuid() const;
+	virtual uint32_t getDynamicFlags() const;
 
 	virtual WowObjectType getType() const;
 	virtual std::string getTypeLabel() const;
@@ -51,8 +52,6 @@ public:
 	// protected
 	virtual uint64_t* getVirtualTable() const;
 
-	virtual const uint8_t* getDynamicDataAddress() const;
-
 protected:
 	WowGame& mGame;
 	
@@ -67,6 +66,9 @@ protected:
 	{
 		return *(T*)get().descriptor;
 	}
+
+private:
+	const WowObjectDescriptor& getObjectData() const;
 };
 
 #include <sstream>

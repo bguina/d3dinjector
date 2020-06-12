@@ -5,6 +5,8 @@
 #include <map>
 #include <memory>
 
+
+#include "FileLogger.h"
 #include "WowObjects.h"
 
 /*
@@ -155,6 +157,7 @@ public:
 
 private:
 	const uint8_t** mPointerAddr;
+	mutable FileLogger mDbg;
 	std::map<WowGuid128, std::shared_ptr<WowObject>> mObjects;
 };
 

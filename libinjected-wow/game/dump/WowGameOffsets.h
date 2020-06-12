@@ -34,24 +34,4 @@ struct WowGameOffsets {
 		static const uint64_t OffsetObjectManagerBase = 0x238BD08;
 		static const uint64_t OffsetFirstObject = 0x18;
 	};
-
-	struct WowObject {
-		static const uint64_t DescriptorOffsetObjectDynamicflags = 0x14;
-	};
-
-	struct WowUnitObject {
-		static const uint64_t DescriptorOffsetSummonedBy = 0x5C;
-		static const uint64_t DescriptorOffsetTargetGuid = 0x9C;
-		static const uint64_t DescriptorOffsetClass = 0xD1;
-		static const uint64_t DescriptorOffsetHealth = 0xDC;
-		static const uint64_t DescriptorOffsetEnergy = 0xE4;
-		static const uint64_t DescriptorOffsetMaxHealth = 0xFC;
-		
-		static const uint64_t DescriptorOffsetMaxEnergy = 0x104;
-		
-		static const uint64_t DescriptorOffsetLevel = 0x134;
-		static const uint64_t DescriptorOffsetRace = 0x158;
-		static const uint64_t DescriptorOffsetUnitDynamicflags = 0x174;
-
-	};
 };

@@ -19,6 +19,11 @@ const WowGuid128* WowObject::getGuid() const
 	return &get().guid;
 }
 
+uint32_t WowObject::getDynamicFlags() const
+{
+	return getObjectData().dynamicFlags;
+}
+
 //		StorageField = 0x10,//good-33526
 //		ObjectType = 0x20,//good-33526
 //		NextObject = 0x70,//good-33526
@@ -108,27 +113,27 @@ int WowObject::getFacingDeltaDegrees(const WowObject& object) const
 
 bool WowObject::isLootable() const
 {
-	return *reinterpret_cast<const uint32_t*>((getDynamicDataAddress() + WowGameOffsets::WowObject::DescriptorOffsetObjectDynamicflags)) & uint32_t(WowObjectDynamicFlags::Lootable);
+	return getObjectData().dynamicFlags & uint32_t(WowObjectDynamicFlags::Lootable);
 }
 
 bool WowObject::isTappedByOthers() const
 {
-	return *reinterpret_cast<const uint32_t*>((getDynamicDataAddress() + WowGameOffsets::WowObject::DescriptorOffsetObjectDynamicflags)) & uint32_t(WowObjectDynamicFlags::Tapped);
+	return getObjectData().dynamicFlags & uint32_t(WowObjectDynamicFlags::Tapped);
 }
 
 bool WowObject::isTappedByMe() const
 {
-	return isLootable() || *reinterpret_cast<const uint32_t*>((getDynamicDataAddress() + WowGameOffsets::WowObject::DescriptorOffsetObjectDynamicflags)) & uint32_t(WowObjectDynamicFlags::TappedByMe);
+	return isLootable() || getObjectData().dynamicFlags & uint32_t(WowObjectDynamicFlags::TappedByMe);
 }
 
 bool WowObject::isTappedByAllThreatList() const
 {
-	return *reinterpret_cast<const uint32_t*>((getDynamicDataAddress() + WowGameOffsets::WowObject::DescriptorOffsetObjectDynamicflags)) & (uint32_t(WowObjectDynamicFlags::Lootable) | uint32_t(WowObjectDynamicFlags::IsTappedByAllThreatList));
+	return getObjectData().dynamicFlags & (uint32_t(WowObjectDynamicFlags::Lootable) | uint32_t(WowObjectDynamicFlags::IsTappedByAllThreatList));
 }
 
 bool WowObject::isInvisible() const
 {
-	return *reinterpret_cast<const uint32_t*>((getDynamicDataAddress() + WowGameOffsets::WowUnitObject::DescriptorOffsetUnitDynamicflags)) & uint32_t(WowObjectDynamicFlags::Invisible);
+	return getObjectData().dynamicFlags & uint32_t(WowObjectDynamicFlags::Invisible);
 }
 
 uint64_t* WowObject::getVirtualTable() const
@@ -136,7 +141,7 @@ uint64_t* WowObject::getVirtualTable() const
 	return *(uint64_t**)getAddress();
 }
 
-const uint8_t* WowObject::getDynamicDataAddress() const
+const WowObjectDescriptor& WowObject::getObjectData() const
 {
-	return (const uint8_t*)get().descriptor;
+	return getDescriptorData<WowObjectDescriptor>();
 }

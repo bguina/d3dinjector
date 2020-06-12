@@ -1,5 +1,6 @@
 #include <fstream>
 #include <sstream>
+#include <utility>
 #include <direct.h>
 
 #include "FileLogger.h"
@@ -30,7 +31,7 @@ const std::string FileLogger::warn = std::string(YELLOW) + "[w] ";
 const std::string FileLogger::err = std::string(BOLDRED) + "[e] ";
 
 FileLogger::FileLogger(const std::string& tag) :
-	FileLogger(tag, std::string())
+	FileLogger(tag, "")
 {
 	struct stat dirInfo;
 
@@ -38,6 +39,11 @@ FileLogger::FileLogger(const std::string& tag) :
 	if (0 != stat(mFolder.c_str(), &dirInfo) && errno == ENOENT) {
 		_mkdir(mFolder.c_str());
 	}
+}
+
+FileLogger::FileLogger(const std::string& tag, const LogLevel level) :
+	FileLogger(tag, "", level)
+{
 }
 
 FileLogger::FileLogger(const FileLogger& o) :
@@ -53,11 +59,18 @@ FileLogger::FileLogger(const FileLogger& o, const std::string& prefix) :
 }
 
 FileLogger::FileLogger(const std::string& tag, const std::string& prefix) :
+	FileLogger(tag, prefix, Debug)
+{
+
+}
+
+FileLogger::FileLogger(std::string tag, const std::string& prefix, const LogLevel level) :
 	mFolder("D:\\nvtest\\"),
-	mTag(tag),
+	mTag(std::move(tag)),
 	mPrefix(prefix + ": "),
 	mOutputPath(mFolder + mTag + ".log"),
-	mOfs(mOutputPath, std::fstream::out | std::fstream::app)
+	mOfs(mOutputPath, std::fstream::out | std::fstream::app),
+	mLevel(level)
 {
 
 }
@@ -68,23 +81,24 @@ const std::string& FileLogger::getTag() const {
 	return mTag;
 }
 
-void FileLogger::clear() {
-	std::ofstream(mOutputPath, std::fstream::in | std::fstream::out);
+void FileLogger::setLevel(LogLevel level)
+{
+	mLevel = level;
 }
 
-void FileLogger::log(const std::string& msg) {
+void FileLogger::log(const std::string & msg) {
 	*this << mPrefix << msg << std::endl;
 }
 
-void FileLogger::i(const std::string& msg) {
+void FileLogger::i(const std::string & msg) {
 	*this << info << mPrefix << msg << normal << std::endl;
 }
 
-void FileLogger::w(const std::string& msg) {
+void FileLogger::w(const std::string & msg) {
 	*this << warn << mPrefix << msg << normal << std::endl;
 }
 
-void FileLogger::e(const std::string& msg) {
+void FileLogger::e(const std::string & msg) {
 	*this << err << mPrefix << msg << normal << std::endl;
 }
 

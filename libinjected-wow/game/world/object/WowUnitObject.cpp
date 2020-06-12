@@ -60,7 +60,7 @@ float WowUnitObject::getHealthPercent() const
 
 bool WowUnitObject::isDead() const
 {
-	return *reinterpret_cast<const uint32_t*>((getDynamicDataAddress() + WowGameOffsets::WowObject::DescriptorOffsetObjectDynamicflags)) & uint32_t(WowObjectDynamicFlags::Dead);
+	return getUnitData().flags & uint32_t(WowObjectDynamicFlags::Dead);
 }
 
 uint64_t WowUnitObject::getNpcFlags() const
@@ -100,20 +100,30 @@ bool WowUnitObject::isNpcTrader() const
 
 int WowUnitObject::getEnergy() const
 {
-	return *reinterpret_cast<const uint32_t*>(getDynamicDataAddress() + WowGameOffsets::WowUnitObject::DescriptorOffsetEnergy);
+	return getUnitData().power[0];
 }
 
 int WowUnitObject::getMaxEnergy() const
 {
-	return *reinterpret_cast<const uint32_t*>((getDynamicDataAddress() + WowGameOffsets::WowUnitObject::DescriptorOffsetMaxEnergy));
+	return getUnitData().maxPower[0];
 }
 
 bool WowUnitObject::isInCombat() const
 {
-	return *reinterpret_cast<const uint32_t*>((getDynamicDataAddress() + WowGameOffsets::WowUnitObject::DescriptorOffsetUnitDynamicflags)) & uint32_t(WowUnitDynamicFlags::isInCombat);
+	return getUnitData().flags & uint32_t(WowUnitFlags::isInCombat);
 }
 
-WowAura* WowUnitObject::getAuraByIndex(const int index) const
+const uint32_t* WowUnitObject::getRawFlags() const
+{
+	return &getUnitData().flags;
+}
+
+const uint32_t* WowUnitObject::getRawPower() const
+{
+	return getUnitData().power;
+}
+
+WowAura* WowUnitObject::getRawAuraByIndex(const int index) const
 {
 	typedef WowAura* (__fastcall UnitGetAuraByIndex)(const uint8_t* self, uint32_t idx);
 	return mGame.getFunction<UnitGetAuraByIndex>(0x7625E0)(getAddress(), index);
@@ -123,7 +133,7 @@ bool WowUnitObject::hasAura(const unsigned int spellId) const
 {
 	for (auto i = 0; ; ++i)
 	{
-		auto* aura = getAuraByIndex(i);
+		auto* aura = getRawAuraByIndex(i);
 		if (nullptr == aura) break;
 		if (spellId == aura->spellId) return true;
 	}
@@ -132,12 +142,12 @@ bool WowUnitObject::hasAura(const unsigned int spellId) const
 
 WowGuid128  WowUnitObject::getSummonedBy() const
 {
-	return *(WowGuid128*)(getDynamicDataAddress() + WowGameOffsets::WowUnitObject::DescriptorOffsetSummonedBy);
+	return getUnitData().summonedBy;
 }
 
 const WowGuid128* WowUnitObject::getTargetGuid() const
 {
-	return (WowGuid128*)(getDynamicDataAddress() + WowGameOffsets::WowUnitObject::DescriptorOffsetTargetGuid);
+	return &getUnitData().target;
 }
 
 void WowUnitObject::moveTo(WowGame& game, const WowVector3f& destination)

@@ -8,12 +8,16 @@
 class FileLogger : public ILogger {
 public:
 	FileLogger(const std::string& tag);
+	FileLogger(const std::string& tag, LogLevel level);
 	FileLogger(FileLogger const&);
 	FileLogger(const FileLogger& o, const std::string& prefix);
+	FileLogger(std::string tag, const std::string& prefix, LogLevel level);
+
 	void operator=(FileLogger const&) = delete;
 	virtual ~FileLogger();
 
 	const std::string& getTag() const override;
+	void setLevel(LogLevel level) override;
 
 	// append output for the next file flush
 	void log(const std::string& msg) override;
@@ -21,15 +25,17 @@ public:
 	void w(const std::string& msg) override;
 	void e(const std::string& msg) override;
 
-	// clear previous file content
-	void clear();
-
 	template<typename T>
 	std::ostream& operator<<(const T& obj) {
-		mOfs << mPrefix << obj << std::flush;
+		mOfs << mPrefix << obj;
 		return mOfs;
 	}
-
+	
+	//std::ostream& operator<<(const LogLevel& obj) {
+	//	mOfs << mPrefix << obj << std::flush;
+	//	return mOfs;
+	//}
+	
 	std::string d() { return debug; }
 	std::string v() { return verbose; }
 	std::string i() { return info; }
@@ -45,6 +51,7 @@ private:
 	const std::string mPrefix;
 	const std::string mOutputPath;
 	std::ofstream mOfs;
+	LogLevel mLevel;
 
 public:
 

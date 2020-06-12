@@ -20,24 +20,31 @@ bool SpellBook::isLearnt(int spellId) const
 	return nullptr != spell && spell->flags & IsLearnt;
 }
 
-int64_t SpellBook::getSpellCooldown(const WowGame& game, int spellId) const
+uint64_t SpellBook::getSpellCooldownTime(const WowGame& game, int spellId) const
 {
-	using SpellGetSpellCooldown = bool(__fastcall)(unsigned int idx, unsigned int someBool, int a3Flags, int64_t* pResDuration, int64_t* pResStart, int64_t* a60, int32_t* a70, uint64_t* a8, int32_t* aNullable);
-	int64_t start = 0;
-	int64_t duration = 0;
+	using SpellGetSpellCooldown = bool(__fastcall)(unsigned int id, unsigned int someBool, uint32_t a3Flags, uint64_t* pResDuration, uint64_t* pResStart, int64_t* a60, int32_t* a70, uint64_t* a8, int32_t* aNullable);
+	uint64_t start = 0;
+	uint64_t duration = 0;
 	uint64_t someRes(0);
-	const auto res(game.getFunction<SpellGetSpellCooldown>(WowGameOffsets::FunctionSpell_GetSpellCooldown)(spellId, false, 0, &duration, &start, nullptr, nullptr, &someRes, nullptr));
-
-	return res;
+	if (!game.getFunction<SpellGetSpellCooldown>(WowGameOffsets::FunctionSpell_GetSpellCooldown)(spellId, false, 0, &duration, &start, nullptr, nullptr, &someRes, nullptr))
+		return 0;
+	return start + duration;
 }
 
 bool SpellBook::castSpell(const WowGame& game, const uint32_t spellId, const uint128_t* target)
 {
-	using SpellBookCastSpell = void(__fastcall)(int spell, int itemId, const uint128_t* pGuid128, unsigned __int8 isTrade, char padArg);
+	const WowGuid128 dummy;
+	const WowGuid128& result(nullptr != target ? *target : dummy);
+	return castSpell(game, spellId, 0, &result);
+}
+
+bool SpellBook::castSpell(const WowGame& game, uint32_t spellId, uint32_t itemId, const uint128_t* target)
+{
+	using SpellBookCastSpell = void(__fastcall)(int spell, int item, const uint128_t* pGuid128, unsigned __int8 isTrade, char padArg);
 	const auto spellIdx(getSpellIndex(spellId));
 
 	if (spellIdx < 0) return false;
-	game.getFunction<SpellBookCastSpell>(WowGameOffsets::FunctionSpellBook_CastSpell)(spellIdx, 0, target, 0, 0);
+	game.getFunction<SpellBookCastSpell>(WowGameOffsets::FunctionSpellBook_CastSpell)(spellIdx, itemId, target, 0, 0);
 	return true;
 }
 
@@ -99,8 +106,8 @@ bool SpellBook::orderPetToAttackTarget(const WowGame& game, const WowGuid128* ta
 		ptrTmp = (uint64_t*)((uint8_t*)ptrTmp - 0x04);
 		found = true;
 	}
-	//mDbg << FileLogger::info << "[Spell Pet Attack at : " << ptrTmp << " id == " << 0 << FileLogger::normal << std::endl;
-	//mDbg << FileLogger::info << "[Spell Pet Attack at : " << ptrTmp - 0x14 << " id == " << 0 << FileLogger::normal << std::endl;
+	//mLog << FileLogger::info << "[Spell Pet Attack at : " << ptrTmp << " id == " << 0 << FileLogger::normal << std::endl;
+	//mLog << FileLogger::info << "[Spell Pet Attack at : " << ptrTmp - 0x14 << " id == " << 0 << FileLogger::normal << std::endl;
 	if (found)
 	{
 		petInfoSendPetAction(game, ptrTmp, target);
